@@ -27,7 +27,7 @@ test:
 	python3 -m tox -p auto
 
 .PHONY: deploy
-deploy: init format test login-dev
+deploy: init login-dev
 	sls deploy --stage $${STAGE:-dev} --aws-profile $(.DEV_PROFILE)
 
 .PHONY: deploy-prod
