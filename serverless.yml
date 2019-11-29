@@ -65,5 +65,5 @@ custom:
     dev: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:keycloak-authorizer-dev-authenticate
 
 functions:
-  handler:
-    handler: handler.hello
+  get_status: ${file(serverless/functions/get_status.yaml)}
+  update_status: ${file(serverless/functions/get_status.yaml)}
