@@ -48,5 +48,10 @@ class StatusData:
             ReturnValues="UPDATED_NEW",
         )
 
-    print("UpdateItem succeeded:")
-    print(json.dumps(db_response))
+        if "Item" in db_response:
+            item = db_response["Item"]
+            log.info(f"Updatet status {item}")
+            return status
+
+        log.info(f"Item {id} not found")
+        return None
