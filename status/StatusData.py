@@ -11,17 +11,16 @@ class StatusData:
         dynamodb = boto3.resource("dynamodb", "eu-west-1")
         self.table = dynamodb.Table("status_data")
 
-    def get_item(self, id):
-        key = {"uuid": id}
-        db_response = self.table.get_item(Key=key)
-
-        if "Item" in db_response:
-            item = db_response["Item"]
-            log.info(f"Found item {item}")
-            return item
-
-        log.info(f"Item {id} not found.")
-        return None
+    def create_item(self, id, status):
+        db_response = self.table.put_item(
+            Item={
+                'uuid': id,
+                'dato': datetime.datetime.now().timestamp(),
+                'status': status
+                }
+        )
+        print("PutItem succeeded:")
+        print(json.dumps(db_response))
 
     def get_status(self, id):
         key = {"uuid": id}
