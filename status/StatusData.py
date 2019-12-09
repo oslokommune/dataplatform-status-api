@@ -27,12 +27,11 @@ class StatusData:
         db_response = self.table.get_item(Key=key)
 
         if "Item" in db_response:
-            item = db_response["Item"]
-            status = item["status"]
+            status = db_response["Item"]["status"]
             log.info(f"Found status {status}")
-            return status
+            return db_response["Item"]["status"]
 
-        log.info(f"Status {status} not found")
+        log.info(f"Status not found for {db_response['Item']}")
         return None
 
     def update_status(self, id, status):

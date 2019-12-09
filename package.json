@@ -10,8 +10,5 @@
         "serverless-pseudo-parameters": "^2.5.0",
         "serverless-python-requirements": "^5.0.1",
         "serverless-scriptable-plugin": "^1.0.4"
-    },
-    "dependencies": {
-        "serverless": "^1.58.0"
     }
 }
