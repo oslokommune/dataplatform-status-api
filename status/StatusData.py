@@ -29,10 +29,10 @@ class StatusData:
         if "Item" in db_response:
             status = db_response["Item"]["status"]
             log.info(f"Found status {status}")
-            return db_response["Item"]["status"]
+            return {"statusCode": 200, "process_status": json.dumps(db_response["Item"]["status"])}
 
         log.info(f"Status not found for {db_response['Item']}")
-        return None
+        return {"statusCode": 404, "body": json.dumps("Could not find item.")}
 
     def update_status(self, id, status):
         key = {"uuid": id}
