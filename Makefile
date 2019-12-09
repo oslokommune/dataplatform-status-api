@@ -28,7 +28,7 @@ test:
 
 .PHONY: deploy
 deploy: init login-dev
-	sls deploy --stage $${STAGE:-dev} --aws-profile $(.DEV_PROFILE)
+	sls deploy --verbose --stage $${STAGE:-dev} --aws-profile $(.DEV_PROFILE)
 
 .PHONY: deploy-prod
 deploy-prod: init format is-git-clean test login-prod

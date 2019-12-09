@@ -17,7 +17,7 @@ class StatusData:
                 'uuid': id,
                 'dato': datetime.datetime.now().timestamp(),
                 'status': status
-                }
+            }
         )
         print("PutItem succeeded:")
         print(json.dumps(db_response))

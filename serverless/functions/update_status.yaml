@@ -5,7 +5,7 @@ events:
 - http:
     path: status/{uuid}
     method: post
-    cors: true
+    cors: { origin: '*' }
     request:
       parameters:
         paths:

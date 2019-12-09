@@ -20,6 +20,7 @@ provider:
       - ':'
       - - 'arn:aws:iam:'
         - Ref: AWS::AccountId
+        - 'policy/status-api-policy'
     - Fn::Join:
         - ':'
         - - 'arn:aws:iam::aws'
@@ -66,4 +67,4 @@ custom:
 
 functions:
   get_status: ${file(serverless/functions/get_status.yaml)}
-  update_status: ${file(serverless/functions/get_status.yaml)}
+  update_status: ${file(serverless/functions/update_status.yaml)}
