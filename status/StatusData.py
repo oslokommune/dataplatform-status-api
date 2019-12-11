@@ -62,5 +62,5 @@ class StatusData:
                 "process_status": json.dumps(db_response["Item"]["processStatus"]),
             }
         else:
-            log.info(f"Status not found for {db_response['Item']}")
+            log.info(f"Status not found for {id}")
             return {"statusCode": 404, "body": json.dumps("Could not find item.")}
