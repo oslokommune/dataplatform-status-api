@@ -9,7 +9,7 @@ log.setLevel(logging.INFO)
 def handler(event, context):
     params = event["pathParameters"]
     uuid = params["uuid"]
-    """ny status?"""
+    ###ny status?####
     status = params["nyStatus"]
 
     db = StatusData()
