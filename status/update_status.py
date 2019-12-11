@@ -16,7 +16,7 @@ def handler(event, context):
 
     item = db.update_status(uuid, status)
     if item is None:
-        return response(404, json.dumps({"error": "Could not find item"}))
+        return response(404, json.dumps({"error": "Could not update item"}))
 
     return response(200, json.dumps(item))
 
