@@ -9,16 +9,14 @@ log.setLevel(logging.INFO)
 def handler(event, context):
     params = event["pathParameters"]
     uuid = params["uuid"]
-    """ny status?"""
-    status = params["status"]
-
     db = StatusData()
+    db_response = db.create_item(id=uuid)
+    status_code = db_response["ResponseMetadata"]["HTTPStatusCode"]
 
-    item = db.update_status(uuid, status)
-    if item is None:
-        return response(404, json.dumps({"error": "Could not find item"}))
-
-    return response(200, json.dumps(item))
+    if status_code is not 200:
+        return response(500, json.dumps({"error": "Could not create item"}))
+    else:
+        return response(200, json.dumps(db_response))
 
 
 def response(code, body):
