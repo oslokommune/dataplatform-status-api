@@ -12,11 +12,6 @@ class StatusData:
         self.table = dynamodb.Table("status_data")
 
     def create_item(self, id):
-        log.info(f"Trying to write {id} to database with type {type(id)}")
-        log.info(
-            f"Trying to write dato to database with type {type(datetime.datetime.now())}")
-        log.info(
-            f"Trying to write processStatus to database with type {type('STARTED')}")
         db_response = self.table.put_item(
             Item={
                 'uuid': id,
