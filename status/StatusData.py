@@ -27,34 +27,34 @@ class StatusData:
         db_response = self.table.get_item(Key=key)
 
         if "Item" in db_response:
-            status = db_response["Item"]["status"]
-            log.info(f"Found status {status}")
+            status = db_response["Item"]["processStatus"]
+            log.info(f"Found processStatus {status}")
             return {
                 "statusCode": 200,
-                "process_status": json.dumps(db_response["Item"]["status"]),
+                "process_status": json.dumps(db_response["Item"]["processStatus"]),
             }
 
         log.info(f"Status not found for {db_response['Item']}")
         return {"statusCode": 404, "body": json.dumps("Could not find item.")}
 
-##TODO##":d": datetime.datetime.now().timestamp(), må konverters fra float til desimal
-### dato = :d,
+    ##TODO##":d": datetime.datetime.now().timestamp(), må konverters fra float til desimal
+    ### dato = :d,
     def update_status(self, id, status):
         key = {"uuid": id}
         db_response = self.table.update_item(
             Key=key,
-            UpdateExpression="set nyStatus = :s",
+            UpdateExpression="SET dato = :d, processStatus = :s",
             ExpressionAttributeValues={
+                ":d": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
                 ":s": status,
             },
         )
-        item = db_response["Item"]
-      
-        if item:
+        if "Item" in db_response:
+            status = db_response["Item"]["processStatus"]
+            log.info(f"Found status {status}")
             return {
                 "statusCode": 200,
-                "process_status": json.dumps(db_response["Item"]["status"]),
+                "process_status": json.dumps(db_response["Item"]["processStatus"]),
             }
-
         log.info(f"Status not found for {db_response['Item']}")
         return {"statusCode": 404, "body": json.dumps("Could not find item.")}
