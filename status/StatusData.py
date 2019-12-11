@@ -14,9 +14,9 @@ class StatusData:
     def create_item(self, id, status):
         db_response = self.table.put_item(
             Item={
-                'uuid': id,
-                'dato': datetime.datetime.now().timestamp(),
-                'status': status
+                "uuid": id,
+                "dato": datetime.datetime.now().timestamp(),
+                "status": status,
             }
         )
         print("PutItem succeeded:")
@@ -29,27 +29,32 @@ class StatusData:
         if "Item" in db_response:
             status = db_response["Item"]["status"]
             log.info(f"Found status {status}")
-            return {"statusCode": 200, "process_status": json.dumps(db_response["Item"]["status"])}
+            return {
+                "statusCode": 200,
+                "process_status": json.dumps(db_response["Item"]["status"]),
+            }
 
         log.info(f"Status not found for {db_response['Item']}")
         return {"statusCode": 404, "body": json.dumps("Could not find item.")}
 
+##TODO##":d": datetime.datetime.now().timestamp(), må konverters fra float til desimal
+### dato = :d,
     def update_status(self, id, status):
         key = {"uuid": id}
         db_response = self.table.update_item(
             Key=key,
-            UpdateExpression="set date = :d, status = :s",
+            UpdateExpression="set nyStatus = :s",
             ExpressionAttributeValues={
-                ":d": datetime.datetime.now().timestamp(),
                 ":s": status,
             },
-            ReturnValues="UPDATED_NEW",
         )
+        item = db_response["Item"]
+      
+        if item:
+            return {
+                "statusCode": 200,
+                "process_status": json.dumps(db_response["Item"]["status"]),
+            }
 
-        if "Item" in db_response:
-            item = db_response["Item"]
-            log.info(f"Updatet status {item}")
-            return status
-
-        log.info(f"Item {id} not found")
-        return None
+        log.info(f"Status not found for {db_response['Item']}")
+        return {"statusCode": 404, "body": json.dumps("Could not find item.")}

@@ -1,6 +1,6 @@
 import json
 import logging
-from StatusData import StatusData
+from status.StatusData import StatusData
 
 log = logging.getLogger()
 log.setLevel(logging.INFO)
@@ -10,7 +10,7 @@ def handler(event, context):
     params = event["pathParameters"]
     uuid = params["uuid"]
     """ny status?"""
-    status = params["status"]
+    status = params["nyStatus"]
 
     db = StatusData()
 

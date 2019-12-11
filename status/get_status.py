@@ -12,6 +12,7 @@ def handler(event, context):
     db = StatusData()
     item = db.get_status(id=uuid)
 
+    item = db.get_status(uuid)
     if item is None:
         return response(404, json.dumps({"error": "Could not find item"}))
     else:

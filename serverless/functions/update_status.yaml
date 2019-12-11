@@ -3,8 +3,8 @@ environment:
   STAGE: ${self:provider.stage}
 events:
 - http:
-    path: status/{uuid}
-    method: post
+    path: status/{uuid}/{nyStatus}
+    method: put
     cors: { origin: '*' }
     request:
       parameters:
