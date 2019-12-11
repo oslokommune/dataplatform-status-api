@@ -1,0 +1,12 @@
+handler: status.create_status.handler
+environment:
+  STAGE: ${self:provider.stage}
+events:
+- http:
+    path: status/{uuid}
+    method: post
+    cors: { origin: '*' }
+    request:
+      parameters:
+        paths:
+          uuid: true
