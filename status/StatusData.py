@@ -41,6 +41,7 @@ class StatusData:
             db_response = self.table.update_item(
                 Key=key,
                 UpdateExpression="SET dato = :d, processStatus = :s",
+                ConditionExpression='attribute_exists(id)',
                 ExpressionAttributeValues={
                     ":d": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
                     ":s": status,

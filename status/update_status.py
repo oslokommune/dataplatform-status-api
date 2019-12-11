@@ -18,12 +18,11 @@ def handler(event, context):
     if item is None:
         return response(404, json.dumps({"error": "Could not update item"}))
 
-    return response(200, json.dumps(item))
+    return response(200, json.dumps("Status is updated"))
 
 
 def response(code, body):
     return {
         "statusCode": code,
         "body": body,
-        "headers": {"Access-Control-Allow-Origin": "*"},
     }
