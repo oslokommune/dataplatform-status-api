@@ -33,15 +33,21 @@ class StatusData:
         key = {"uuid": id}
         db_response = self.table.get_item(Key=key)
         return db_response
-        
+
     def update_status(self, id, status):
+        valid_statuses = ["STARTED", "FINISHED"]
         key = {"uuid": id}
-        db_response = self.table.update_item(
-            Key=key,
-            UpdateExpression="SET dato = :d, processStatus = :s",
-            ExpressionAttributeValues={
-                ":d": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
-                ":s": status,
-            },
-        )
-        return db_response
+        if status in valid_statuses:
+            db_response = self.table.update_item(
+                Key=key,
+                UpdateExpression="SET dato = :d, processStatus = :s",
+                ExpressionAttributeValues={
+                    ":d": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+                    ":s": status,
+                },
+            )
+            return db_response
+        else:
+            log.info(f"{type(status)} is not a valid status")
+            log.info(f"{type(valid_statuses)} is a valid status")
+            return None
