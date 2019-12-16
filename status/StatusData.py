@@ -21,7 +21,7 @@ class StatusData:
         )
         db_response = self.table.put_item(
             Item={
-                "uuid": id,
+                "id": id,
                 "dato": datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                 "processStatus": "STARTED",
             }
@@ -30,17 +30,18 @@ class StatusData:
         return db_response
 
     def get_status(self, id):
-        key = {"uuid": id}
+        key = {"id": id}
         db_response = self.table.get_item(Key=key)
         return db_response
 
     def update_status(self, id, status):
         valid_statuses = ["STARTED", "FINISHED"]
-        key = {"uuid": id}
+        key = {"id": id}
         if status in valid_statuses:
             db_response = self.table.update_item(
                 Key=key,
                 UpdateExpression="SET dato = :d, processStatus = :s",
+                
                 ExpressionAttributeValues={
                     ":d": datetime.datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
                     ":s": status,
