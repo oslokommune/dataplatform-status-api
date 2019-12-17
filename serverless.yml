@@ -51,7 +51,7 @@ resources:
 custom:
   esLogs:
     endpoint: ${ssm:/dataplatform/elasticsearch/endpoint}
-    index: status-api
+    index: dataplatform-services
     filterPattern: '{ $.function_name = "*" }'
   documentation:
     info:
