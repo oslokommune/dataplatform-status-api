@@ -18,6 +18,9 @@ class StatusData:
         new_uuid = uuid.uuid4()
         return f"{dataset}-{new_uuid}"[0:80]
 
+    def generate_subprocess_uuid(self):
+        return uuid.uuid4()
+
     def create_item(self, body):
         dataset_id = body["dataset-id"]
         status_row_id = self.generate_uuid(dataset_id)
@@ -57,6 +60,7 @@ class StatusData:
     def update_status(self, id, body):
         log.info(f"BODY RECEIVED: {body}")
         dataset_id = body["dataset-id"]
+        subprocess_id = self.generate_subprocess_uuid()
         status_row_id = id
         application = body["application"]
         user = body["user"]
@@ -69,6 +73,7 @@ class StatusData:
         db_response = self.table.put_item(
             Item={
                 "id": status_row_id,
+                "subprocess_id": subprocess_id,
                 "application": application,
                 "user": user,
                 "date_started": date_started,
