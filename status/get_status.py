@@ -8,9 +8,9 @@ log.setLevel(logging.INFO)
 
 def handler(event, context):
     params = event["pathParameters"]
-    uuid = params["uuid"]
+    statusid = params["statusid"]
     db = StatusData()
-    item = db.get_status(id=uuid)
+    item = db.get_status(id=statusid)
 
     if item is None:
         return response(404, json.dumps({"error": "Could not find item"}))

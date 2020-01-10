@@ -7,16 +7,14 @@ log.setLevel(logging.INFO)
 
 
 def handler(event, context):
-    params = event["pathParameters"]
-    uuid = params["uuid"]
     db = StatusData()
-    db_response = db.create_item(id=uuid)
-    status_code = db_response["ResponseMetadata"]["HTTPStatusCode"]
-
-    if status_code is not 200:
-        return response(500, json.dumps({"error": "Could not create item"}))
-    else:
-        return response(200, json.dumps(db_response))
+    content = json.loads(event["body"])
+    try:
+        generated_status_uuid = db.create_item(content)
+        return response(200, json.dumps(generated_status_uuid))
+    except ValueError as ve:
+        log.info(ve)
+        return response(500, ve)
 
 
 def response(code, body):
