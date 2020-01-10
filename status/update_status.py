@@ -8,13 +8,13 @@ log.setLevel(logging.INFO)
 
 def handler(event, context):
     params = event["pathParameters"]
-    uuid = params["uuid"]
-    ###ny status?####
-    status = params["nyStatus"]
+    statusid = params["statusid"]
+
+    content = json.loads(event["body"])
 
     db = StatusData()
 
-    item = db.update_status(uuid, status)
+    item = db.update_status(statusid, content)
     if item is None:
         return response(404, json.dumps({"error": "Could not update item"}))
 
