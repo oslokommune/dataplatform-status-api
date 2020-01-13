@@ -1,5 +1,7 @@
 import boto3
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key
+
 
 import logging
 import json
@@ -55,8 +57,7 @@ class StatusData:
                 f"Was unable to create new status row for {dataset_id}")
 
     def get_status(self, id):
-        key = {"id": id}
-        db_response = self.table.get_item(Key=key)
+        db_response = self.table.query(KeyConditionExpression=Key('id').eq(id))
         return db_response
 
     def update_status(self, id, body):
