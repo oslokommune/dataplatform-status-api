@@ -24,6 +24,7 @@ class StatusData:
     def create_item(self, body):
         dataset_id = body["dataset-id"]
         status_row_id = self.generate_uuid(dataset_id)
+        subprocess_id = self.generate_subprocess_uuid()
         application = body["application"]
         user = body["user"]
         date_started = body["date_started"]
@@ -35,6 +36,7 @@ class StatusData:
         db_response = self.table.put_item(
             Item={
                 "id": status_row_id,
+                "subprocess_id": subprocess_id,
                 "application": application,
                 "user": user,
                 "date_started": date_started,
