@@ -12,14 +12,14 @@ log = logging.getLogger()
 class StatusData:
     def __init__(self):
         dynamodb = boto3.resource("dynamodb", "eu-west-1")
-        self.table = dynamodb.Table("status_data")
+        self.table = dynamodb.Table("status-api-data")
 
     def generate_uuid(self, dataset):
         new_uuid = uuid.uuid4()
         return f"{dataset}-{new_uuid}"[0:80]
 
     def generate_subprocess_uuid(self):
-        return uuid.uuid4()
+        return str(uuid.uuid4())
 
     def create_item(self, body):
         dataset_id = body["dataset-id"]
