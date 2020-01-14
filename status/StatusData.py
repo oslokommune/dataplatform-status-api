@@ -10,6 +10,16 @@ import uuid
 
 log = logging.getLogger()
 
+# ser på status-api-dev-update_status no at den krever dataset-id som parameter i body av POST til API.
+# Bør vi heller ha noko som: "application=dataset" og "application_id=kristoffertest1" og flytte "application"
+# som er der no til "handler=csv-exporter" - da veit vi at det er
+# eit dataset prosess med id=kristoffertest1 som køyrer ein csv-exporter.
+# Da blir det raskt litt enklare å forholde seg til at vi kan legge til dette andre plassar
+
+# ser og at body i POST skal være ein json string, og ikkje eit json objekt. Er det ein grunn til dette?
+# Greit å forholde seg til JSON heile vegen: r = req.post(url=url, data=self.payload)
+# og ikkje: r = req.post(url=url, data=json.dumps(self.payload))
+
 
 class StatusData:
     def __init__(self):

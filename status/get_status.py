@@ -19,7 +19,7 @@ def handler(event, context):
         if item is None:
             return response(404, json.dumps({"error": "Could not find item"}))
         else:
-            return response(200, json.dumps(item))
+            return response(200, json.dumps(item["Items"]))
 
     except ClientError as ce:
         log.info(f"ClientError: {ce}")
