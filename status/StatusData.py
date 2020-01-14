@@ -70,8 +70,9 @@ class StatusData:
                 f"Was unable to create new status row for {application_id}")
 
     def get_status(self, id):
-        db_response = self.table.query(KeyConditionExpression=Key('id').eq(id))
-        return db_response
+        response = self.table.query(KeyConditionExpression=Key('id').eq(id))
+        log.info(f"Response: {response}")
+        return response
 
     def update_status(self, id, body):
         event_id = self.generate_event_uuid()
@@ -86,24 +87,24 @@ class StatusData:
         status = body["status"]
         status_body = body["body"]
 
-        db_response = self.table.put_item(
-            Item={
-                "id": status_row_id,
-                "event_id": event_id,
-                "application": application,
-                "application_id": application_id,
-                "handler": handler,
-                "user": user,
-                "date_started": date_started,
-                "date_end": date_end,
-                "run_status": run_status,
-                "status": status,
-                "status_body": status_body
-            }
-        )
+        update_item = {
+            "id": status_row_id,
+            "event_id": event_id,
+            "application": application,
+            "application_id": application_id,
+            "handler": handler,
+            "user": user,
+            "date_started": date_started,
+            "date_end": date_end,
+            "run_status": run_status,
+            "status": status,
+            "status_body": status_body
+        }
+
+        db_response = self.table.put_item(Item=update_item)
 
         if db_response["ResponseMetadata"]["HTTPStatusCode"] == 200:
-            return (db_response, event_id)
+            return update_item
         else:
             raise ValueError(
                 f"Was unable to update new status row for {application_id}")
