@@ -103,7 +103,7 @@ class StatusData:
         )
 
         if db_response["ResponseMetadata"]["HTTPStatusCode"] == 200:
-            return db_response
+            return (db_response, event_id)
         else:
             raise ValueError(
-                f"Was unable to update new status row for {dataset_id}")
+                f"Was unable to update new status row for {application_id}")

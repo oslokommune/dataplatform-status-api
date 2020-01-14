@@ -14,11 +14,12 @@ def handler(event, context):
 
     db = StatusData()
 
-    item = db.update_status(statusid, content)
+    item, event_id = db.update_status(statusid, content)
     if item is None:
         return response(404, json.dumps({"error": "Could not update item"}))
 
-    return response(200, json.dumps("Status is updated"))
+    responsebody = {"event_id": event_id, "item": content}
+    return response(200, json.dumps(responsebody))
 
 
 def response(code, body):
