@@ -69,3 +69,4 @@ functions:
   get_status: ${file(serverless/functions/get_status.yaml)}
   update_status: ${file(serverless/functions/update_status.yaml)}
   create_status: ${file(serverless/functions/create_status.yaml)}
+  push_to_pipeline: ${file(serverless/functions/push_to_pipeline.yaml)}

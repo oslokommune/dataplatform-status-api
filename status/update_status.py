@@ -10,7 +10,7 @@ def handler(event, context):
     params = event["pathParameters"]
     statusid = params["statusid"]
 
-    content = event["body"]
+    content = json.loads(event["body"])
 
     db = StatusData()
 

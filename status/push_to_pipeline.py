@@ -8,7 +8,7 @@ log.setLevel(logging.INFO)
 
 def handler(event, context):
     db = StatusData()
-    content = event["body"]
+    content = json.loads(event["body"])
     try:
         sns_response = db.push_to_pipeline(content)
         return response(200, json.dumps(sns_response))

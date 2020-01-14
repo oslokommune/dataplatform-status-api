@@ -8,7 +8,7 @@ log.setLevel(logging.INFO)
 
 def handler(event, context):
     db = StatusData()
-    content = event["body"]
+    content = json.loads(event["body"])
     try:
         generated_status_uuid = db.create_item(content)
         return response(200, json.dumps(generated_status_uuid))

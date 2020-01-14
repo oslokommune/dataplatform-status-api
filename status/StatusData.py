@@ -29,12 +29,12 @@ class StatusData:
         s3path = body["s3path"]
         status_process_id = body["status_process_id"]
 
-        request_body = {"s3path": s3path,
-                        "status_process_id": status_process_id}
+        request_body = json.dumps({"s3path": s3path,
+                                   "status_process_id": status_process_id})
 
         sns = boto3.client('sns')
 
-        topic = 'arn:aws:sns:region:0123456789:my-topic-arn'
+        topic = 'arn:aws:sns:eu-west-1:***REMOVED***:datalake-s3-notifications'
 
         response = sns.publish(
             TopicArn=topic,
