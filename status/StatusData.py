@@ -8,17 +8,9 @@ import json
 import datetime
 import uuid
 
+import requests
+
 log = logging.getLogger()
-
-# ser på status-api-dev-update_status no at den krever dataset-id som parameter i body av POST til API.
-# Bør vi heller ha noko som: "application=dataset" og "application_id=kristoffertest1" og flytte "application"
-# som er der no til "handler=csv-exporter" - da veit vi at det er
-# eit dataset prosess med id=kristoffertest1 som køyrer ein csv-exporter.
-# Da blir det raskt litt enklare å forholde seg til at vi kan legge til dette andre plassar
-
-# ser og at body i POST skal være ein json string, og ikkje eit json objekt. Er det ein grunn til dette?
-# Greit å forholde seg til JSON heile vegen: r = req.post(url=url, data=self.payload)
-# og ikkje: r = req.post(url=url, data=json.dumps(self.payload))
 
 
 class StatusData:
@@ -32,6 +24,27 @@ class StatusData:
 
     def generate_event_uuid(self):
         return str(uuid.uuid4())
+
+    def push_to_pipeline(self, body):
+        s3path = body["s3path"]
+        status_process_id = body["status_process_id"]
+
+        request_body = {"s3path": s3path,
+                        "status_process_id": status_process_id}
+
+        sns = boto3.client('sns')
+
+        topic = 'arn:aws:sns:region:0123456789:my-topic-arn'
+
+        response = sns.publish(
+            TopicArn=topic,
+            Message=request_body
+        )
+
+        log.info(
+            f"Posted {request_body} to topic: {topic} with response: {response}")
+
+        return response
 
     def create_item(self, body):
         application = body["application"]

@@ -1,0 +1,8 @@
+handler: status.push_to_pipeline.handler
+environment:
+  STAGE: ${self:provider.stage}
+events:
+- http:
+    path: status/push
+    method: post
+    cors: { origin: '*' }

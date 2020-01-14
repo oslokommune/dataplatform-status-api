@@ -8,13 +8,13 @@ log.setLevel(logging.INFO)
 
 def handler(event, context):
     db = StatusData()
-    content = event["body"]
+    content = json.loads(event["body"])
     try:
-        generated_status_uuid = db.create_item(content)
-        return response(200, json.dumps(generated_status_uuid))
-    except ValueError as ve:
-        log.info(ve)
-        return response(500, ve)
+        sns_response = db.push_to_pipeline(content)
+        return response(200, json.dumps(sns_response))
+    except Exception as e:
+        log.info(e)
+        return response(500, e)
 
 
 def response(code, body):
