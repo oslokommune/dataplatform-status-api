@@ -30,14 +30,16 @@ class StatusData:
         new_uuid = uuid.uuid4()
         return f"{dataset}-{new_uuid}"[0:80]
 
-    def generate_subprocess_uuid(self):
+    def generate_event_uuid(self):
         return str(uuid.uuid4())
 
     def create_item(self, body):
-        dataset_id = body["dataset-id"]
-        status_row_id = self.generate_uuid(dataset_id)
-        subprocess_id = self.generate_subprocess_uuid()
         application = body["application"]
+        application_id = body["application_id"]
+        handler = body["handler"]
+        status_row_id = self.generate_uuid(application_id)
+        event_id = self.generate_event_uuid()
+
         user = body["user"]
         date_started = body["date_started"]
         date_end = body["date_end"]
@@ -48,7 +50,7 @@ class StatusData:
         db_response = self.table.put_item(
             Item={
                 "id": status_row_id,
-                "subprocess_id": subprocess_id,
+                "event_id": event_id,
                 "application": application,
                 "user": user,
                 "date_started": date_started,
@@ -56,7 +58,8 @@ class StatusData:
                 "run_status": run_status,
                 "status": status,
                 "status_body": status_body,
-                "dataset_id": dataset_id
+                "application_id": application_id,
+                "handler": handler
             }
         )
 
@@ -64,18 +67,18 @@ class StatusData:
             return status_row_id
         else:
             raise ValueError(
-                f"Was unable to create new status row for {dataset_id}")
+                f"Was unable to create new status row for {application_id}")
 
     def get_status(self, id):
         db_response = self.table.query(KeyConditionExpression=Key('id').eq(id))
         return db_response
 
     def update_status(self, id, body):
-        log.info(f"BODY RECEIVED: {body}")
-        dataset_id = body["dataset-id"]
-        subprocess_id = self.generate_subprocess_uuid()
+        event_id = self.generate_event_uuid()
         status_row_id = id
         application = body["application"]
+        application_id = body["application_id"]
+        handler = body["handler"]
         user = body["user"]
         date_started = body["date_started"]
         date_end = body["date_end"]
@@ -86,15 +89,16 @@ class StatusData:
         db_response = self.table.put_item(
             Item={
                 "id": status_row_id,
-                "subprocess_id": subprocess_id,
+                "event_id": event_id,
                 "application": application,
+                "application_id": application_id,
+                "handler": handler,
                 "user": user,
                 "date_started": date_started,
                 "date_end": date_end,
                 "run_status": run_status,
                 "status": status,
-                "status_body": status_body,
-                "dataset_id": dataset_id
+                "status_body": status_body
             }
         )
 
