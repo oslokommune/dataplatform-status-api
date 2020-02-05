@@ -3,10 +3,10 @@ environment:
   STAGE: ${self:provider.stage}
 events:
 - http:
-    path: status/{uuid}
+    path: status/{statusid}
     method: get
     cors: { origin: '*' }
     request:
       parameters:
         paths:
-          uuid: true
+          statusid: true
