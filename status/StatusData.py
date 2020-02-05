@@ -25,27 +25,6 @@ class StatusData:
     def generate_event_uuid(self):
         return str(uuid.uuid4())
 
-    def push_to_pipeline(self, body):
-        s3path = body["s3path"]
-        status_process_id = body["status_process_id"]
-
-        request_body = json.dumps({"s3path": s3path,
-                                   "status_process_id": status_process_id})
-
-        sns = boto3.client('sns')
-
-        topic = 'arn:aws:sns:eu-west-1:***REMOVED***:datalake-s3-notifications'
-
-        response = sns.publish(
-            TopicArn=topic,
-            Message=request_body
-        )
-
-        log.info(
-            f"Posted {request_body} to topic: {topic} with response: {response}")
-
-        return response
-
     def create_item(self, body):
         application = body["application"]
         application_id = body["application_id"]
