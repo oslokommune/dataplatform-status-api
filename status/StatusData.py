@@ -38,6 +38,9 @@ class StatusData:
         run_status = 'STARTED'
         status = 'OK'
         status_body = body["body"]
+        s3path = "N/A"
+        if "s3path" in body:
+            s3path = body["s3path"]
 
         db_response = self.table.put_item(
             Item={
@@ -51,7 +54,8 @@ class StatusData:
                 "status": status,
                 "status_body": status_body,
                 "application_id": application_id,
-                "handler": handler
+                "handler": handler,
+                "s3path": s3path,
             }
         )
 
@@ -63,7 +67,6 @@ class StatusData:
 
     def get_status(self, id):
         response = self.table.query(KeyConditionExpression=Key('id').eq(id))
-        log.info(f"Response: {response}")
         return response
 
     def update_status(self, id, body):
@@ -78,6 +81,7 @@ class StatusData:
         run_status = body["run_status"]
         status = body["status"]
         status_body = body["body"]
+        s3path = body["s3path"]
 
         update_item = {
             "id": status_row_id,
@@ -90,7 +94,8 @@ class StatusData:
             "date_end": date_end,
             "run_status": run_status,
             "status": status,
-            "status_body": status_body
+            "status_body": status_body,
+            "s3path": s3path,
         }
 
         db_response = self.table.put_item(Item=update_item)
