@@ -55,7 +55,7 @@ class StatusData:
                 "status_body": status_body,
                 "application_id": application_id,
                 "handler": handler,
-                "s3path": s3path,
+                "s3_path": s3path,
             }
         )
 
@@ -95,7 +95,7 @@ class StatusData:
             "run_status": run_status,
             "status": status,
             "status_body": status_body,
-            "s3path": s3path,
+            "s3_path": s3path,
         }
 
         db_response = self.table.put_item(Item=update_item)
