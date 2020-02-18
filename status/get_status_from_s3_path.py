@@ -21,7 +21,7 @@ def is_owner(event, item):
 
 def handler(event, context):
     params = event["pathParameters"]
-    # The s3path parameter MUST be base54 encoded since it can contain "/"
+    # The s3path parameter MUST be base64 encoded since it can contain "/"
     # and any other character known to man.....
     path = base64.b64decode(params["s3path"]).decode("utf-8", "ignore")
     db = StatusData()
