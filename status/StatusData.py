@@ -35,8 +35,8 @@ class StatusData:
         user = body["user"]
         date_started = body["date_started"]
         date_end = body["date_end"]
-        run_status = 'STARTED'
-        status = 'OK'
+        run_status = "STARTED"
+        status = "OK"
         status_body = body["body"]
         s3path = "N/A"
         if "s3path" in body:
@@ -63,10 +63,11 @@ class StatusData:
             return status_row_id
         else:
             raise ValueError(
-                f"Was unable to create new status row for {application_id}")
+                f"Was unable to create new status row for {application_id}"
+            )
 
     def get_status(self, id):
-        response = self.table.query(KeyConditionExpression=Key('id').eq(id))
+        response = self.table.query(KeyConditionExpression=Key("id").eq(id))
         return response
 
     def update_status(self, id, body):
@@ -104,4 +105,5 @@ class StatusData:
             return update_item
         else:
             raise ValueError(
-                f"Was unable to update new status row for {application_id}")
+                f"Was unable to update new status row for {application_id}"
+            )
