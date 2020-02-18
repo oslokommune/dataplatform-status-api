@@ -1,14 +1,7 @@
 import boto3
-from botocore.exceptions import ClientError
-from boto3.dynamodb.conditions import Key
-
-
+from boto3.dynamodb.conditions import Key, Attr
 import logging
-import json
-import datetime
 import uuid
-
-import requests
 
 log = logging.getLogger()
 
@@ -69,6 +62,14 @@ class StatusData:
     def get_status(self, id):
         response = self.table.query(KeyConditionExpression=Key("id").eq(id))
         return response
+
+    def get_status_from_s3_path(self, path):
+        resp = self.table.scan(FilterExpression=Attr("s3path").eq(path))
+        # There should never be more than 1 item with a single s3Path, so for now we only
+        # return a value if this is true
+        if len(resp["Items"]) == 1:
+            return resp["Items"][0]
+        return None
 
     def update_status(self, id, body):
         event_id = self.generate_event_uuid()

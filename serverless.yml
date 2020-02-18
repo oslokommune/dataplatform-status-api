@@ -67,5 +67,6 @@ custom:
 
 functions:
   get_status: ${file(serverless/functions/get_status.yaml)}
+  get_status_from_s3_path: ${file(serverless/functions/get_status_from_s3_path.yaml)}
   update_status: ${file(serverless/functions/update_status.yaml)}
   create_status: ${file(serverless/functions/create_status.yaml)}

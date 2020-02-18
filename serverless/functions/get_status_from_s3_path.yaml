@@ -1,0 +1,12 @@
+handler: status.get_status_from_s3_path.handler
+environment:
+  STAGE: ${self:provider.stage}
+events:
+- http:
+    path: status-from-path/{s3path}
+    method: get
+    cors: { origin: '*' }
+    request:
+      parameters:
+        paths:
+          s3path: true
