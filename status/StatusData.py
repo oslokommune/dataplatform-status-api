@@ -61,7 +61,10 @@ class StatusData:
 
     def get_status(self, id):
         response = self.table.query(KeyConditionExpression=Key("id").eq(id))
-        return response
+        if response["Items"]:
+            return response
+        else:
+            return None
 
     def get_status_from_s3_path(self, path):
         resp = self.table.scan(FilterExpression=Attr("s3path").eq(path))
