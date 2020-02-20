@@ -48,7 +48,7 @@ class StatusData:
                 "status_body": status_body,
                 "application_id": application_id,
                 "handler": handler,
-                "s3_path": s3path,
+                "s3path": s3path,
             }
         )
 

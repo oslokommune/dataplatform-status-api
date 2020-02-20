@@ -24,16 +24,18 @@ def handler(event, context):
     # The s3path parameter MUST be base64 encoded since it can contain "/"
     # and any other character known to man.....
     path = base64.b64decode(params["s3path"]).decode("utf-8", "ignore")
+    log.info(f"path from base64 encoded parameter: {path}")
     db = StatusData()
 
     try:
         item = db.get_status_from_s3_path(path)
-
+        log.info(f"db.get_status_from_s3_path returned: {item}")
         if item is None:
             return response(404, json.dumps(error_message))
         else:
             if is_owner(event, item):
                 ret = {"id": item["id"]}
+                log.info(f"Found owner for item and returning: {ret}")
                 return response(200, json.dumps(ret))
             return response(403, json.dumps({"error": "Access denied"}))
 
