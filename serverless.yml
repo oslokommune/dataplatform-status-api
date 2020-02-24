@@ -59,6 +59,8 @@ custom:
       version: ${git:sha1}
       title: 'Status-api'
       description: 'Status-api for dataplattform'
+    authorizers:
+      - ${file(serverless/kc-authorizer.yaml)}
   deploymentBucket:
     prod: ok-origo-dataplatform-config-prod
     dev: ok-origo-dataplatform-config-dev

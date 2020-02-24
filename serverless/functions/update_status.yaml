@@ -6,6 +6,7 @@ events:
     path: status/{statusid}
     method: post
     cors: { origin: '*' }
+    authorizer: ${file(serverless/kc-authorizer.yaml)}
     request:
       parameters:
         paths:
