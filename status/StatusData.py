@@ -86,7 +86,9 @@ class StatusData:
         run_status = body["run_status"]
         status = body["status"]
         status_body = body["body"]
-        s3path = body["s3path"]
+        s3path = "N/A"
+        if "s3path" in body:
+            s3path = body["s3path"]
 
         update_item = {
             "id": status_row_id,
