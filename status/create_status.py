@@ -14,7 +14,7 @@ def handler(event, context):
         return response(200, json.dumps(generated_status_uuid))
     except ValueError as ve:
         log.info(ve)
-        return response(500, ve)
+        return response(500, str(ve))
 
 
 def response(code, body):
