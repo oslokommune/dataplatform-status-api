@@ -1,6 +1,7 @@
 import json
 import logging
 from status.StatusData import StatusData
+from status.common import response
 
 log = logging.getLogger()
 log.setLevel(logging.INFO)
@@ -22,10 +23,3 @@ def handler(event, context):
         return response(
             404, json.dumps(f"Could not find the requested item to update: {statusid}")
         )
-
-
-def response(code, body):
-    return {
-        "statusCode": code,
-        "body": body,
-    }

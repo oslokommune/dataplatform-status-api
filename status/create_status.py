@@ -1,6 +1,7 @@
 import json
 import logging
 from status.StatusData import StatusData
+from status.common import response
 
 log = logging.getLogger()
 log.setLevel(logging.INFO)
@@ -15,11 +16,3 @@ def handler(event, context):
     except ValueError as ve:
         log.info(ve)
         return response(500, str(ve))
-
-
-def response(code, body):
-    return {
-        "statusCode": code,
-        "body": body,
-        "headers": {"Access-Control-Allow-Origin": "*"},
-    }

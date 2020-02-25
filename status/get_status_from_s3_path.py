@@ -5,6 +5,7 @@ from auth import SimpleAuth
 from botocore.exceptions import ClientError
 
 from status.StatusData import StatusData
+from status.common import response
 
 log = logging.getLogger()
 log.setLevel(logging.INFO)
@@ -42,11 +43,3 @@ def handler(event, context):
     except ClientError as ce:
         log.info(f"ClientError: {ce}")
         return response(404, json.dumps(error_message))
-
-
-def response(code, body):
-    return {
-        "statusCode": code,
-        "body": body,
-        "headers": {"Access-Control-Allow-Origin": "*"},
-    }

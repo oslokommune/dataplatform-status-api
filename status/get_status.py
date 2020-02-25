@@ -1,7 +1,7 @@
 import json
 import logging
 from botocore.exceptions import ClientError
-
+from status.common import response
 from status.StatusData import StatusData
 
 log = logging.getLogger()
@@ -24,11 +24,3 @@ def handler(event, context):
     except ClientError as ce:
         log.info(f"ClientError: {ce}")
         return response(404, json.dumps({"error": "Could not find item"}))
-
-
-def response(code, body):
-    return {
-        "statusCode": code,
-        "body": body,
-        "headers": {"Access-Control-Allow-Origin": "*"},
-    }
