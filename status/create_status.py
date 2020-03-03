@@ -1,7 +1,7 @@
 import json
 import logging
 from status.StatusData import StatusData
-from status.common import response
+from status.common import response, response_error
 
 log = logging.getLogger()
 log.setLevel(logging.INFO)
@@ -14,5 +14,6 @@ def handler(event, context):
         generated_status_uuid = db.create_item(content)
         return response(200, json.dumps(generated_status_uuid))
     except ValueError as ve:
-        log.info(ve)
-        return response(500, str(ve))
+        log.info(f"ValueError: {ve} - from content: {content}")
+        error = {"message": f"Could not create status: {str(ve)}"}
+        return response_error(500, error)

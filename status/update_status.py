@@ -1,7 +1,7 @@
 import json
 import logging
 from status.StatusData import StatusData
-from status.common import response
+from status.common import response, response_error
 
 log = logging.getLogger()
 log.setLevel(logging.INFO)
@@ -20,6 +20,5 @@ def handler(event, context):
         item = db.update_status(statusid, content)
         return response(200, json.dumps(item))
     else:
-        return response(
-            404, json.dumps(f"Could not find the requested item to update: {statusid}")
-        )
+        error = {"message": f"Could not find the requested item to update: {statusid}"}
+        return response_error(404, error)

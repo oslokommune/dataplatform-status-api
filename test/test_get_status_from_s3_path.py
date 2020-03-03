@@ -32,7 +32,7 @@ class TestGetStatusFromS3Path:
         mocker.patch.object(SimpleAuth, "is_owner", return_value=False)
         result = handler(event, empty_context)
         body = json.loads(result["body"])
-        assert "error" in body
+        assert "message" in body
         assert result["statusCode"] == 403
 
     def test_owner_when_application_is_not_dataset(self, mocker):
@@ -44,7 +44,7 @@ class TestGetStatusFromS3Path:
         mocker.patch.object(StatusData, "get_status_from_s3_path", return_value=ret)
         result = handler(event, empty_context)
         body = json.loads(result["body"])
-        assert "error" in body
+        assert "message" in body
         assert result["statusCode"] == 403
 
     def test_when_path_is_not_found(self, mocker):
@@ -52,5 +52,5 @@ class TestGetStatusFromS3Path:
         mocker.patch.object(StatusData, "get_status_from_s3_path", return_value=ret)
         result = handler(event, empty_context)
         body = json.loads(result["body"])
-        assert "error" in body
+        assert "message" in body
         assert result["statusCode"] == 404

@@ -5,12 +5,10 @@ from auth import SimpleAuth
 from botocore.exceptions import ClientError
 
 from status.StatusData import StatusData
-from status.common import response
+from status.common import response, response_error
 
 log = logging.getLogger()
 log.setLevel(logging.INFO)
-
-error_message = {"error": "Could not find item"}
 
 
 def is_owner(event, item):
@@ -32,14 +30,17 @@ def handler(event, context):
         item = db.get_status_from_s3_path(path)
         log.info(f"db.get_status_from_s3_path returned: {item}")
         if item is None:
-            return response(404, json.dumps(error_message))
+            error = {"message": "Could not find item"}
+            return response(404, json.dumps(error))
         else:
             if is_owner(event, item):
                 ret = {"id": item["id"]}
                 log.info(f"Found owner for item and returning: {ret}")
                 return response(200, json.dumps(ret))
-            return response(403, json.dumps({"error": "Access denied"}))
+            error = {"message": "Access denid"}
+            return response_error(403, json.dumps(error))
 
     except ClientError as ce:
         log.info(f"ClientError: {ce}")
-        return response(404, json.dumps(error_message))
+        error = {"message": f"Could not get status: {ce}"}
+        return response_error(404, json.dumps(error))

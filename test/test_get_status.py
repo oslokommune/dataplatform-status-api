@@ -28,7 +28,7 @@ class TestGetStatus:
         result = handler(event, empty_context)
         body = json.loads(result["body"])
         assert result["statusCode"] == 404
-        assert "error" in body
+        assert "message" in body
 
     def test_get_status_failed_error(self, mocker):
         ret = "uu-ii-dd"
@@ -39,4 +39,4 @@ class TestGetStatus:
         result = handler(event, empty_context)
         body = json.loads(result["body"])
         assert result["statusCode"] == 404
-        assert "error" in body
+        assert "message" in body

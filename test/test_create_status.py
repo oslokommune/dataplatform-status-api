@@ -18,7 +18,7 @@ class TestCreateStatus:
     def test_create_status_failed_error(self, mocker):
         ret = "uu-ii-dd"
         mocked = mocker.patch.object(StatusData, "create_item", return_value=ret)
-        mocked.side_effect = ValueError("Could not create status")
+        mocked.side_effect = ValueError("errorMessage")
         result = handler(event, empty_context)
         assert result["statusCode"] == 500
-        assert result["body"] == "Could not create status"
+        assert result["body"]["message"] == "Could not create status: errorMessage"
