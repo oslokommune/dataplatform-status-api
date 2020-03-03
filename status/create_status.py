@@ -15,5 +15,5 @@ def handler(event, context):
         return response(200, json.dumps(generated_status_uuid))
     except ValueError as ve:
         log.info(f"ValueError: {ve} - from content: {content}")
-        error = {"message": f"Could not create status: {str(ve)}"}
+        error = f"Could not create status: {str(ve)}"
         return response_error(500, error)

@@ -30,17 +30,17 @@ def handler(event, context):
         item = db.get_status_from_s3_path(path)
         log.info(f"db.get_status_from_s3_path returned: {item}")
         if item is None:
-            error = {"message": "Could not find item"}
-            return response(404, json.dumps(error))
+            error = "Could not find item"
+            return response_error(404, error)
         else:
             if is_owner(event, item):
                 ret = {"id": item["id"]}
                 log.info(f"Found owner for item and returning: {ret}")
                 return response(200, json.dumps(ret))
-            error = {"message": "Access denid"}
-            return response_error(403, json.dumps(error))
+            error = "Access denid"
+            return response_error(403, error)
 
     except ClientError as ce:
         log.info(f"ClientError: {ce}")
-        error = {"message": f"Could not get status: {ce}"}
-        return response_error(404, json.dumps(error))
+        error = f"Could not get status: {ce}"
+        return response_error(404, error)

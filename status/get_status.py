@@ -17,12 +17,12 @@ def handler(event, context):
         item = db.get_status(id=statusid)
 
         if item is None:
-            error = {"message": f"Could not find item: {statusid}"}
-            return response_error(404, json.dumps(error))
+            error = f"Could not find item: {statusid}"
+            return response_error(404, error)
         else:
             return response(200, json.dumps(item["Items"]))
 
     except ClientError as ce:
         log.info(f"ClientError: {ce}")
-        error = {"message": f"Could not get status: {ce}"}
-        return response_error(404, json.dumps(error))
+        error = f"Could not get status: {ce}"
+        return response_error(404, error)

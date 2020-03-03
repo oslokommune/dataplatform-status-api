@@ -20,5 +20,5 @@ def handler(event, context):
         item = db.update_status(statusid, content)
         return response(200, json.dumps(item))
     else:
-        error = {"message": f"Could not find the requested item to update: {statusid}"}
+        error = f"Could not find the requested item to update: {statusid}"
         return response_error(404, error)

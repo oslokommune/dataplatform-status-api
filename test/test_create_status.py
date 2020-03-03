@@ -20,5 +20,6 @@ class TestCreateStatus:
         mocked = mocker.patch.object(StatusData, "create_item", return_value=ret)
         mocked.side_effect = ValueError("errorMessage")
         result = handler(event, empty_context)
+        body = json.loads(result["body"])
         assert result["statusCode"] == 500
-        assert result["body"]["message"] == "Could not create status: errorMessage"
+        assert body["message"] == "Could not create status: errorMessage"
