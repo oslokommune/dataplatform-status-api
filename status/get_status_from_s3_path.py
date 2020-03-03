@@ -37,7 +37,7 @@ def handler(event, context):
                 ret = {"id": item["id"]}
                 log.info(f"Found owner for item and returning: {ret}")
                 return response(200, json.dumps(ret))
-            error = "Access denid"
+            error = "Access denied"
             return response_error(403, error)
 
     except ClientError as ce:
