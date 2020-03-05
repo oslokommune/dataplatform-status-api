@@ -41,18 +41,24 @@ Setting the `body` with `status_add(body={"files_incoming": [], "files_outgoing"
 Database is setup in [dataplatform-config](https://github.oslo.kommune.no/origo-dataplatform/dataplatform-config/tree/master/devops/modules/services/status-api)
 
 The main fields in the database:
-* id: The status ID used to trace connected events throughout the system (N-entries)
-* event_id: Unique ID per event (many `event_id` per `id`)
-* application: The application (ex: `dataset`)
-* application_id: A application specific ID to be able to look up the owner or source (ex: `dataset.name`)
-* date_started: Start of execution
-* date_end: End of execution
-* handler: Who initiates the event (ex: `data-uploader`)
-* run_status: Overall status for the status ID (ex: `CONTINUE`, `FINISHED`)
-* status: Status for the `event_id` (ex: `OK`, `FAILED`)
-* user: The user that is used in `handler` to execute the event (ex: `service-user-s3-writer`)
-* s3path: Path of the uploaded file
-* body: namespace where the event can add data relevant for the execution
+
+| Field        | Type           | Description | Example |
+|: ----------- |: -------------- |: ----------- |: -----------|
+| id | string | The status ID used to trace connected events throughout the system (N-entries). Primary partition key | my-dataset-uu-ii-dd |
+| event_id | uuid | Unique ID per event (many `event_id` per `id`) | uu-ii-dd |
+| application | string | The application | dataset |
+| application_id | string | A application specific ID to be able to look up the owner or source | dataset.name |
+| date_started | time | Start of execution. Primary sort key | 2020-03-02T12:34:23.042400 |
+| date_end | time | End of execution | 2020-03-02T12:34:24.042400 |
+| handler | string | Who initiates the event | data-uploader, s3-writer |
+| run_status | string | Overall status for the status ID | CONTINUE, FINISHED |
+| status | string | Status for the `event_id` | OK, FAILED |
+| user | string | The user that is used in `handler` to execute the event | service-user-s3-writer |
+| s3path | string | Path of the uploaded file  | incoming/yellow/my-dataset/version/edition/file.xls |
+| body | object | namespace where the event can add data relevant for the execution | {"files_incoming": [], "files_outgoing": []}|
+
+`id` is not unique: the status of a event throughout a system will have many rows with identical `id` field, a `event_id` is unique
+
 
 ## Common Python
 The master of status keys and values are defined in the [common-python](https://github.oslo.kommune.no/origo-dataplatform/common-python/blob/master/dataplatform/status/status.py) library:
