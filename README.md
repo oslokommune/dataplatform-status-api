@@ -43,7 +43,7 @@ Database is setup in [dataplatform-config](https://github.oslo.kommune.no/origo-
 The main fields in the database:
 
 | Field        | Type           | Description | Example |
-|: ----------- |: -------------- |: ----------- |: -----------|
+| ----------- | -------------- | ----------- | -----------|
 | id | string | The status ID used to trace connected events throughout the system (N-entries). Primary partition key | my-dataset-uu-ii-dd |
 | event_id | uuid | Unique ID per event (many `event_id` per `id`) | uu-ii-dd |
 | application | string | The application | dataset |
