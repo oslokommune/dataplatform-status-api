@@ -1,21 +1,13 @@
 import json
 import logging
 import base64
-from auth import SimpleAuth
 from botocore.exceptions import ClientError
 
 from status.StatusData import StatusData
-from status.common import response, response_error
+from status.common import response, response_error, is_owner
 
 log = logging.getLogger()
 log.setLevel(logging.INFO)
-
-
-def is_owner(event, item):
-    if item["application"] == "dataset":
-        dataset_id = item["application_id"]
-        return SimpleAuth().is_owner(event, dataset_id)
-    return False
 
 
 def handler(event, context):
@@ -32,13 +24,14 @@ def handler(event, context):
         if item is None:
             error = "Could not find item"
             return response_error(404, error)
-        else:
-            if is_owner(event, item):
-                ret = {"id": item["id"]}
-                log.info(f"Found owner for item and returning: {ret}")
-                return response(200, json.dumps(ret))
-            error = "Access denied"
-            return response_error(403, error)
+
+        if is_owner(event, item):
+            ret = {"id": item["id"]}
+            log.info(f"Found owner for item and returning: {ret}")
+            return response(200, json.dumps(ret))
+        error = "Access denied"
+        log.info(f"is_owner() failed with event: {event} on item: {item} ")
+        return response_error(403, error)
 
     except ClientError as ce:
         log.info(f"ClientError: {ce}")

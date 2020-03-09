@@ -1,16 +1,31 @@
 from status.update_status import handler
 from status.StatusData import StatusData
+from auth import SimpleAuth
 
 import json
 
-event = {"pathParameters": {"statusid": "uu-ii-dd"}, "body": json.dumps({})}
+event = {
+    "pathParameters": {"statusid": "uu-ii-dd"},
+    "body": json.dumps({}),
+    "headers": {"Authorization": ""},
+}
 empty_context = {}
 
 
 class TestUpdateStatus:
     def test_update_status_success(self, mocker):
-        ret = {"Items": [{"id": "uu-ii-dd", "event_id": "first-id"}]}
+        ret = {
+            "Items": [
+                {
+                    "id": "uu-ii-dd",
+                    "event_id": "first-id",
+                    "application": "dataset",
+                    "application_id": "ff",
+                }
+            ]
+        }
         mocker.patch.object(StatusData, "get_status", return_value=ret)
+        mocker.patch.object(SimpleAuth, "is_owner", return_value=True)
         mocker.patch.object(
             StatusData,
             "update_status",
