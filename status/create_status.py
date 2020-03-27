@@ -1,23 +1,31 @@
 import json
-import logging
+from aws_xray_sdk.core import patch_all, xray_recorder
+from dataplatform.awslambda.logging import (
+    logging_wrapper,
+    log_add,
+    log_exception,
+)
 from status.StatusData import StatusData
 from status.common import response, response_error, is_owner
 
-log = logging.getLogger()
-log.setLevel(logging.INFO)
+patch_all()
 
 
+@logging_wrapper
+@xray_recorder.capture("create_status")
 def handler(event, context):
     db = StatusData()
     item = json.loads(event["body"])
     try:
-        if is_owner(event, item) is False:
-            log.info(f"User tried to create status but was denied: {item}")
+        caller_is_owner = is_owner(event, item)
+        log_add(is_owner=caller_is_owner)
+        if not caller_is_owner:
             return response_error(403, "Access denied")
 
         generated_status_uuid = db.create_item(item)
+        log_add(generated_status_uuid=generated_status_uuid)
         return response(200, json.dumps(generated_status_uuid))
     except ValueError as ve:
-        log.info(f"ValueError: {ve} - from content: {item}")
-        error = f"Could not create status: {str(ve)}"
-        return response_error(500, error)
+        log_exception(ve)
+        error_msg = f"Could not create status: {str(ve)}"
+        return response_error(500, error_msg)
