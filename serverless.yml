@@ -36,6 +36,7 @@ provider:
     KEYCLOAK_REALM: api-catalog
     CLIENT_ID: status-api
     CLIENT_SECRET: ${ssm:/dataplatform/status-api/keycloak-client-secret~true}
+    SERVICE_NAME: ${self:service.name}
 plugins:
   - serverless-aws-documentation
   - serverless-python-requirements
