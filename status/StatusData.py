@@ -31,6 +31,7 @@ class StatusData:
         s3path = "N/A"
         if "s3path" in body:
             s3path = body["s3path"]
+        meta = body.get("meta", "N/A")
 
         db_response = self.table.put_item(
             Item={
@@ -46,6 +47,7 @@ class StatusData:
                 "application_id": application_id,
                 "handler": handler,
                 "s3path": s3path,
+                "meta": meta,
             }
         )
 
@@ -77,6 +79,7 @@ class StatusData:
         application = body["application"]
         application_id = body["application_id"]
         handler = body["handler"]
+        meta = body.get("meta", "N/A")
         user = body["user"]
         date_started = body["date_started"]
         date_end = body["date_end"]
@@ -93,6 +96,7 @@ class StatusData:
             "application": application,
             "application_id": application_id,
             "handler": handler,
+            "meta": meta,
             "user": user,
             "date_started": date_started,
             "date_end": date_end,
