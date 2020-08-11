@@ -77,36 +77,25 @@ class StatusData:
 
     def update_status(self, id, body):
         event_id = self.generate_event_uuid()
-        status_row_id = id
-        application = body["application"]
         application_id = body["application_id"]
-        handler = body["handler"]
-        meta = body.get("meta", "N/A")
-        user = body["user"]
-        date_started = body["date_started"]
-        date_end = body["date_end"]
-        run_status = body["run_status"]
-        status = body["status"]
-        status_body = body["body"]
-        s3path = "N/A"
-        if "s3path" in body:
-            s3path = body["s3path"]
 
         update_item = {
-            "id": status_row_id,
+            "id": id,
             "event_id": event_id,
-            "application": application,
+            "application": body["application"],
             "application_id": application_id,
-            "handler": handler,
-            "meta": meta,
-            "user": user,
-            "date_started": date_started,
-            "date_end": date_end,
-            "run_status": run_status,
-            "status": status,
-            "status_body": status_body,
-            "s3_path": s3path,
+            "handler": body["handler"],
+            "meta": body.get("meta", "N/A"),
+            "user": body["user"],
+            "date_started": body["date_started"],
+            "date_end": body["date_end"],
+            "run_status": body["run_status"],
+            "status": body["status"],
+            "status_body": body["body"],
         }
+
+        if "s3path" in body:
+            update_item["s3path"] = body["s3path"]
 
         db_response = self.table.put_item(Item=update_item)
 
