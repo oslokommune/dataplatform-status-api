@@ -1,5 +1,5 @@
 import boto3
-from boto3.dynamodb.conditions import Key, Attr
+from boto3.dynamodb.conditions import Key
 import uuid
 
 
@@ -66,11 +66,13 @@ class StatusData:
             return None
 
     def get_status_from_s3_path(self, path):
-        resp = self.table.scan(FilterExpression=Attr("s3path").eq(path))
+        response = self.table.query(
+            IndexName="IdByS3PathIndex", KeyConditionExpression=Key("s3path").eq(path)
+        )
         # There should never be more than 1 item with a single s3Path, so for now we only
         # return a value if this is true
-        if len(resp["Items"]) == 1:
-            return resp["Items"][0]
+        if len(response["Items"]) == 1:
+            return response["Items"][0]
         return None
 
     def update_status(self, id, body):

@@ -25,8 +25,17 @@ def create_table(dynamodb):
     hashkey = "id"
 
     keyschema = [{"AttributeName": hashkey, "KeyType": "HASH"}]
-    attributes = [{"AttributeName": hashkey, "AttributeType": "S"}]
-    gsis = []
+    attributes = [
+        {"AttributeName": hashkey, "AttributeType": "S"},
+        {"AttributeName": "s3path", "AttributeType": "S"},
+    ]
+    gsis = [
+        {
+            "IndexName": "IdByS3PathIndex",
+            "KeySchema": [{"AttributeName": "s3path", "KeyType": "HASH"}],
+            "Projection": {"ProjectionType": "ALL"},
+        }
+    ]
 
     return dynamodb.create_table(
         TableName=table_name,
