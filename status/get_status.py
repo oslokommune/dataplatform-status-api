@@ -21,13 +21,13 @@ def handler(event, context):
     db = StatusData()
 
     try:
-        item = db.get_status(id=statusid)
+        result = db.get_status(id=statusid)
 
-        if item is None:
+        if result is None:
             error_msg = f"Could not find item: {statusid}"
             return response_error(404, error_msg)
 
-        items = item["Items"]
+        items = result["Items"]
         caller_is_owner = is_owner(event, items[0])
         log_add(is_owner=caller_is_owner)
         if not caller_is_owner:
