@@ -37,7 +37,7 @@ class TestUpdateStatus:
         assert result["statusCode"] == 200
 
     def test_update_status_not_found(self, mocker):
-        ret = {"Items": []}
+        ret = None
         mocker.patch.object(StatusData, "get_status", return_value=ret)
         result = handler(event, empty_context)
         assert result["statusCode"] == 404

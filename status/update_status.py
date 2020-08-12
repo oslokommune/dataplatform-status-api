@@ -18,14 +18,15 @@ def handler(event, context):
 
     db = StatusData()
     result = db.get_status(statusid)
-    items = result["Items"]
 
-    if len(items) != 0:
-        caller_is_owner = is_owner(event, items[0])
-        log_add(is_owner=caller_is_owner)
-        if not caller_is_owner:
-            return response_error(403, "Access denied")
-        item = db.update_status(statusid, content)
-        return response(200, json.dumps(item))
-    error = f"Could not find the requested item to update: {statusid}"
-    return response_error(404, error)
+    if result is None:
+        error = f"Could not find the requested item to update: {statusid}"
+        return response_error(404, error)
+
+    items = result["Items"]
+    caller_is_owner = is_owner(event, items[0])
+    log_add(is_owner=caller_is_owner)
+    if not caller_is_owner:
+        return response_error(403, "Access denied")
+    item = db.update_status(statusid, content)
+    return response(200, json.dumps(item))
