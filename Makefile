@@ -37,11 +37,11 @@ test: $(BUILD_VENV)/bin/tox
 	$(BUILD_PY) -m tox -p auto -o
 
 .PHONY: deploy
-deploy: node_modules test login-dev
+deploy: init test login-dev
 	sls deploy --verbose --stage $${STAGE:-dev} --aws-profile $(.DEV_PROFILE)
 
 .PHONY: deploy-prod
-deploy-prod: node_modules format is-git-clean test login-prod
+deploy-prod: init format is-git-clean test login-prod
 	sls deploy --stage prod --aws-profile $(.PROD_PROFILE)
 	sls downloadDocumentation --outputFileName swagger.yaml --stage prod --aws-profile $(.PROD_PROFILE)
 
