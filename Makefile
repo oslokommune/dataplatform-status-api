@@ -9,7 +9,7 @@
 .DEV_PROFILE := saml-origo-dev
 .PROD_PROFILE := saml-dataplatform-prod
 
-GLOBAL_PY := python3.7
+GLOBAL_PY := python3
 BUILD_VENV ?= .build_venv
 BUILD_PY := $(BUILD_VENV)/bin/python
 
@@ -37,11 +37,11 @@ test: $(BUILD_VENV)/bin/tox
 	$(BUILD_PY) -m tox -p auto -o
 
 .PHONY: deploy
-deploy: node_modules test login-dev
+deploy: init test login-dev
 	sls deploy --verbose --stage $${STAGE:-dev} --aws-profile $(.DEV_PROFILE)
 
 .PHONY: deploy-prod
-deploy-prod: node_modules format is-git-clean test login-prod
+deploy-prod: init format is-git-clean test login-prod
 	sls deploy --stage prod --aws-profile $(.PROD_PROFILE)
 	sls downloadDocumentation --outputFileName swagger.yaml --stage prod --aws-profile $(.PROD_PROFILE)
 
@@ -74,25 +74,12 @@ is-git-clean:
 		false; \
 	fi
 
-.PHONY: build
-build: $(BUILD_VENV)/bin/wheel $(BUILD_VENV)/bin/twine
-	$(BUILD_PY) setup.py sdist bdist_wheel
-
-.PHONY: jenkins-bump-patch
-jenkins-bump-patch: $(BUILD_VENV)/bin/bump2version is-git-clean
-	$(BUILD_VENV)/bin/bump2version patch
-	git push origin HEAD:${BRANCH_NAME}
-
 ###
 # Python build dependencies
 ##
 
 $(BUILD_VENV)/bin/pip-compile: $(BUILD_VENV)
 	$(BUILD_PY) -m pip install -U pip-tools
-
-$(BUILD_VENV)/bin/tox: $(BUILD_VENV)
-	$(BUILD_PY) -m pip install -I virtualenv==16.7.9
-	$(BUILD_PY) -m pip install -U tox
 
 $(BUILD_VENV)/bin/%: $(BUILD_VENV)
 	$(BUILD_PY) -m pip install -U $*
