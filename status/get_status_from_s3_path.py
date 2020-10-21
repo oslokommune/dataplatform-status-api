@@ -17,9 +17,9 @@ patch_all()
 @xray_recorder.capture("get_status_from_s3_path")
 def handler(event, context):
     params = event["pathParameters"]
-    # The s3path parameter MUST be base64 encoded since it can contain "/"
+    # The s3_path parameter MUST be base64 encoded since it can contain "/"
     # and any other character known to man.....
-    path = base64.b64decode(params["s3path"]).decode("utf-8", "ignore")
+    path = base64.b64decode(params["s3_path"]).decode("utf-8", "ignore")
     log_add(s3_path=path)
     db = StatusData()
 
@@ -30,9 +30,14 @@ def handler(event, context):
             return response_error(404, error)
 
         caller_is_owner = is_owner(event, item)
-        log_add(status_id=item["id"], is_owner=caller_is_owner)
+        log_add(trace_id=item["trace_id"], is_owner=caller_is_owner)
         if is_owner(event, item):
-            ret = {"id": item["id"]}
+            ret = {
+                # TODO: Return both id and trace_id until
+                # all clients are updated
+                "id": item["trace_id"],
+                "trace_id": item["trace_id"],
+            }
             return response(200, json.dumps(ret))
         error = "Access denied"
         return response_error(403, error)

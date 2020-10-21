@@ -22,9 +22,9 @@ def handler(event, context):
         if not caller_is_owner:
             return response_error(403, "Access denied")
 
-        generated_status_uuid = db.create_item(item)
-        log_add(generated_status_uuid=generated_status_uuid)
-        return response(200, json.dumps(generated_status_uuid))
+        trace_id = db.create_item(item)
+        log_add(trace_id=trace_id)
+        return response(200, json.dumps({"trace_id": trace_id}))
     except ValueError as ve:
         log_exception(ve)
         error_msg = f"Could not create status: {str(ve)}"

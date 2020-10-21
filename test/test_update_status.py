@@ -5,7 +5,7 @@ from auth import SimpleAuth
 import json
 
 event = {
-    "pathParameters": {"statusid": "uu-ii-dd"},
+    "pathParameters": {"trace_id": "uu-ii-dd"},
     "body": json.dumps({}),
     "headers": {"Authorization": ""},
 }
@@ -17,10 +17,10 @@ class TestUpdateStatus:
         ret = {
             "Items": [
                 {
-                    "id": "uu-ii-dd",
+                    "trace_id": "uu-ii-dd",
                     "event_id": "first-id",
-                    "application": "dataset",
-                    "application_id": "ff",
+                    "domain": "dataset",
+                    "domain_id": "ff",
                 }
             ]
         }
@@ -29,7 +29,7 @@ class TestUpdateStatus:
         mocker.patch.object(
             StatusData,
             "update_status",
-            return_value={"id": "uu-ii-dd", "event_id": "new-id"},
+            return_value={"trace_id": "uu-ii-dd", "event_id": "new-id"},
         )
         result = handler(event, empty_context)
         body = json.loads(result["body"])

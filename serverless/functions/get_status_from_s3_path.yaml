@@ -3,10 +3,10 @@ environment:
   STAGE: ${self:provider.stage}
 events:
 - http:
-    path: status-from-path/{s3path}
+    path: status-from-path/{s3_path}
     method: get
     cors: { origin: '*' }
     request:
       parameters:
         paths:
-          s3path: true
+          s3_path: true

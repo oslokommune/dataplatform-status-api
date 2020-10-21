@@ -16,15 +16,15 @@ patch_all()
 @xray_recorder.capture("get_status")
 def handler(event, context):
     params = event["pathParameters"]
-    statusid = params["statusid"]
-    log_add(status_id=statusid)
+    trace_id = params["trace_id"]
+    log_add(trace_id=trace_id)
     db = StatusData()
 
     try:
-        result = db.get_status(id=statusid)
+        result = db.get_status(trace_id=trace_id)
 
         if result is None:
-            error_msg = f"Could not find item: {statusid}"
+            error_msg = f"Could not find item: {trace_id}"
             return response_error(404, error_msg)
 
         items = result["Items"]

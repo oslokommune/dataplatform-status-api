@@ -11,16 +11,16 @@ patch_all()
 @xray_recorder.capture("update_status")
 def handler(event, context):
     params = event["pathParameters"]
-    statusid = params["statusid"]
-    log_add(status_id=statusid)
+    trace_id = params["trace_id"]
+    log_add(trace_id=trace_id)
 
     content = json.loads(event["body"])
 
     db = StatusData()
-    result = db.get_status(statusid)
+    result = db.get_status(trace_id)
 
     if result is None:
-        error = f"Could not find the requested item to update: {statusid}"
+        error = f"Could not find the requested item to update: {trace_id}"
         return response_error(404, error)
 
     items = result["Items"]
@@ -28,5 +28,5 @@ def handler(event, context):
     log_add(is_owner=caller_is_owner)
     if not caller_is_owner:
         return response_error(403, "Access denied")
-    item = db.update_status(statusid, content)
+    item = db.update_status(trace_id, content)
     return response(200, json.dumps(item))

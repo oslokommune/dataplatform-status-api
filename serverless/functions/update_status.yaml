@@ -3,11 +3,11 @@ environment:
   STAGE: ${self:provider.stage}
 events:
 - http:
-    path: status/{statusid}
+    path: status/{trace_id}
     method: post
     cors: { origin: '*' }
     authorizer: ${file(serverless/kc-authorizer.yaml)}
     request:
       parameters:
         paths:
-          statusid: true
+          trace_id: true

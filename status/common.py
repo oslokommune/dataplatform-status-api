@@ -16,7 +16,7 @@ def response_error(code, message):
 
 
 def is_owner(event, item):
-    if item["application"] == "dataset":
-        dataset_id = item["application_id"]
+    if item["domain"] == "dataset":
+        dataset_id = item["domain_id"]
         return SimpleAuth().is_owner(event, dataset_id)
     return False

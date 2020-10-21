@@ -5,7 +5,7 @@ from auth import SimpleAuth
 
 import json
 
-event = {"headers": {"Authorization": ""}, "pathParameters": {"statusid": "uu-ii-dd"}}
+event = {"headers": {"Authorization": ""}, "pathParameters": {"trace_id": "uu-ii-dd"}}
 empty_context = {}
 
 
@@ -14,16 +14,16 @@ class TestGetStatus:
         ret = {
             "Items": [
                 {
-                    "id": "uu-ii-dd",
+                    "trace_id": "uu-ii-dd",
                     "event_id": "first-id",
-                    "application": "dataset",
-                    "application_id": "foo",
+                    "domain": "dataset",
+                    "domain_id": "foo",
                 },
                 {
-                    "id": "uu-ii-dd",
+                    "trace_id": "uu-ii-dd",
                     "event_id": "second-id",
-                    "application": "dataset",
-                    "application_id": "bar",
+                    "domain": "dataset",
+                    "domain_id": "bar",
                 },
             ]
         }
