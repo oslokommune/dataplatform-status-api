@@ -16,7 +16,14 @@ def response_error(code, message):
 
 
 def is_owner(event, item):
+    # TODO: Fallback to "domain" for backwards compatibility.
+    # Expect "application" once clients are upadted.
+    if item.get("application") == "dataset":
+        dataset_id = item["application_id"]
+        return SimpleAuth().is_owner(event, dataset_id)
+
     if item["domain"] == "dataset":
         dataset_id = item["domain_id"]
         return SimpleAuth().is_owner(event, dataset_id)
+
     return False
