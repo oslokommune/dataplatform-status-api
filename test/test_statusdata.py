@@ -56,7 +56,7 @@ status_body = {
     "status_body": {"relevant": "data"},
     "s3_path": "/my/path",
     "trace_status": "OK",
-    "event_status": "STARTED",
+    "trace_event_status": "STARTED",
 }
 status_body_legacy = {
     "application": "my-app",
@@ -128,7 +128,7 @@ class TestStatusData:
         assert result["domain_id"] == status_body_legacy["application_id"]
         assert result["component"] == status_body_legacy["handler"]
         assert result["trace_status"] == status_body_legacy["run_status"]
-        assert result["event_status"] == status_body_legacy["status"]
+        assert result["trace_event_status"] == status_body_legacy["status"]
         assert result["status_body"] == status_body_legacy["body"]
         assert result["s3_path"] == status_body_legacy["s3path"]
         assert result["start_time"] == status_body_legacy["date_started"]

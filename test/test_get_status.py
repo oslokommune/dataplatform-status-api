@@ -15,13 +15,13 @@ class TestGetStatus:
             "Items": [
                 {
                     "trace_id": "uu-ii-dd",
-                    "event_id": "first-id",
+                    "trace_event_id": "first-id",
                     "domain": "dataset",
                     "domain_id": "foo",
                 },
                 {
                     "trace_id": "uu-ii-dd",
-                    "event_id": "second-id",
+                    "trace_event_id": "second-id",
                     "domain": "dataset",
                     "domain_id": "bar",
                 },

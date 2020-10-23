@@ -25,8 +25,8 @@ The pseudo-code for the use-case is:
 * **user -> query status API by trace ID**  
   * Repeat query until state (`trace_status`) is `FINISHED`
 * **user -> check if successful**  
-  * If `event_status` is `FAILED` -> get a list of what has been done within the pipeline and the reason for failing
-  * If `event_status` is `OK` -> continue with processing other data that relies on data processed in the above steps
+  * If `trace_event_status` is `FAILED` -> get a list of what has been done within the pipeline and the reason for failing
+  * If `trace_event_status` is `OK` -> continue with processing other data that relies on data processed in the above steps
 
 Each Lambda function (see below) or step in the execution stage is responsible for setting the correct status for each step.
 
@@ -43,27 +43,27 @@ The main fields in the database:
 | Field        | Type           | Description | Example |
 | ----------- | -------------- | ----------- | -----------|
 | trace_id | string | The ID used to trace connected events throughout the system (N-entries). ***Primary partition key***.| `my-dataset-uu-ii-dd` |
-| event_id | uuid | Unique ID per event (many `event_id` per `trace_id`). | `uu-ii-dd` |
+| trace_event_id | uuid | Unique ID per event (many `trace_event_id` per `trace_id`). | `uu-ii-dd` |
 | domain | string | The domain that this status pertains to, e.g. `dataset` for publishing data or events to a dataset | `dataset` |
 | domain_id | string | A domain specific ID to be able to look up the owner or source. | `dataset.name` |
 | start_time | time | Start of execution. ***Primary sort key***. | `2020-03-02T12:34:23.042400` |
 | end_time | time | End of execution | `2020-03-02T12:34:24.042400` |
 | component | string | The component that is the source of the event. | `data-uploader`, `s3-writer` |
 | trace_status | string | Overall status for the trace ID. | `CONTINUE`, `FINISHED` |
-| event_status | string | Status for the `event_id`. | `OK`, `FAILED` |
+| trace_event_status | string | Status for the `trace_event_id`. | `OK`, `FAILED` |
 | user | string | The user that is used in `handler` to execute the event | `service-user-s3-writer`, `ooo123456` |
 | s3_path | string | Path of the uploaded file. | `incoming/yellow/my-dataset/version/edition/file.xls` |
 | status_body | object | Namespace where the component can add data relevant for the execution. | `{"files_incoming": [], "files_outgoing": []}`|
 | meta | object | Metadata about the execution, such as Git revision of the component. | `{"git_rev": ...}` |
 
-**Note**: While the `event_id` is unique to each event (row), the `trace_id` is only unique to a *group of connected events* ("a trace").
+**Note**: While the `trace_event_id` is unique to each event (row), the `trace_id` is only unique to a *group of connected events* ("a trace").
 
 
 ## Common Python
 The master of status keys and values are defined in the [common-python](https://github.oslo.kommune.no/origo-dataplatform/common-python/blob/master/dataplatform/status/status.py) library:
 
 ### dataplatform/awslambda
-Exposes a [decorator](https://github.oslo.kommune.no/origo-dataplatform/common-python/blob/master/dataplatform/awslambda/status.py) to use in lambda functions. See [s3-writer](https://github.oslo.kommune.no/origo-dataplatform/s3-writer/blob/master/handlers/s3_writer.py) for an example of using `@status_wrapper`. This will send a status to the status API after execution of the handler is done. The minimum that should be done is to set `trace_status` and `event_status` keys on the status object, if not the API will end up with `na` values.
+Exposes a [decorator](https://github.oslo.kommune.no/origo-dataplatform/common-python/blob/master/dataplatform/awslambda/status.py) to use in lambda functions. See [s3-writer](https://github.oslo.kommune.no/origo-dataplatform/s3-writer/blob/master/handlers/s3_writer.py) for an example of using `@status_wrapper`. This will send a status to the status API after execution of the handler is done. The minimum that should be done is to set `trace_status` and `trace_event_status` keys on the status object, if not the API will end up with `na` values.
 
 The library expose some `status_*` functions that can be used as shorthand functions in your lambda function to set the correct state of the execution, example: `status_end_continue(status_body={"files_incoming": []})`
 
@@ -114,7 +114,7 @@ $ origo status eide-origo-ng-85c9e5de-ac38-4b37-af8a-a86f08ce2bbb --format=json
   "done": true,
   "trace_id": "eide-origo-ng-85c9e5de-ac38-4b37-af8a-a86f08ce2bbb",
   "trace_status": "FINISHED",
-  "event_status": "OK"
+  "trace_event_status": "OK"
 }
 ```
 ### Get just the done status

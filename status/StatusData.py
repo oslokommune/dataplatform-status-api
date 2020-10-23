@@ -21,11 +21,11 @@ class StatusData:
         body = self._remap_field_names(body)
         domain_id = body["domain_id"]
         trace_id = self.generate_uuid(domain_id)
-        event_id = self.generate_event_uuid()
+        trace_event_id = self.generate_event_uuid()
 
         item = {
             "trace_id": trace_id,
-            "event_id": event_id,
+            "trace_event_id": trace_event_id,
             "domain": body["domain"],
             "domain_id": domain_id,
             "component": body["component"],
@@ -33,7 +33,7 @@ class StatusData:
             "start_time": body["start_time"],
             "end_time": body["end_time"],
             "trace_status": "STARTED",
-            "event_status": "OK",
+            "trace_event_status": "OK",
         }
 
         if body.get("s3_path"):
@@ -72,12 +72,12 @@ class StatusData:
 
     def update_status(self, trace_id, body):
         body = self._remap_field_names(body)
-        event_id = self.generate_event_uuid()
+        trace_event_id = self.generate_event_uuid()
         domain_id = body["domain_id"]
 
         update_item = {
             "trace_id": trace_id,
-            "event_id": event_id,
+            "trace_event_id": trace_event_id,
             "domain": body["domain"],
             "domain_id": domain_id,
             "component": body["component"],
@@ -85,7 +85,7 @@ class StatusData:
             "start_time": body["start_time"],
             "end_time": body["end_time"],
             "trace_status": body["trace_status"],
-            "event_status": body["event_status"],
+            "trace_event_status": body["trace_event_status"],
         }
 
         if body.get("s3_path"):
@@ -115,7 +115,7 @@ class StatusData:
             "application_id": "domain_id",
             "handler": "component",
             "run_status": "trace_status",
-            "status": "event_status",
+            "status": "trace_event_status",
             "body": "status_body",
             "s3path": "s3_path",
             "date_started": "start_time",
