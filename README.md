@@ -31,9 +31,7 @@ The pseudo-code for the use-case is:
 Each Lambda function (see below) or step in the execution stage is responsible for setting the correct status for each step.
 
 ## Data lineage
-The status API provides the status of a exeuction throughout a system, but it also have the added benefit that data lineage can be traced through the system at the same time. When using the `status_*` functions from common-python (or setting them manually on the status object), you can trace which application, application id and most important: which files was processed in each step, and what was the result of the data going out of each step in the function.
-
-Setting the `body` with `status_add(body={"files_incoming": [], "files_outgoing": [], "other": "relevant_information"})` the user can retrieve information on what has happened in each step going through the system.
+The status API provides the status of an execution throughout a system, but it also has the added benefit that data lineage can be traced through the system at the same time. When using the `status_wrapper` from [common-python](https://github.oslo.kommune.no/origo-dataplatform/common-python) (or setting them manually using the `Status` class), you can generate trace events and include relevant data, e.g. which files was processed in each step, and what was the result of the data going out of each step in the function.
 
 ## Database structure
 Database is setup in [dataplatform-config](https://github.oslo.kommune.no/origo-dataplatform/dataplatform-config/tree/master/devops/modules/services/status-api)
@@ -60,19 +58,21 @@ The main fields in the database:
 
 
 ## Common Python
-The master of status keys and values are defined in the [common-python](https://github.oslo.kommune.no/origo-dataplatform/common-python/blob/master/dataplatform/status/status.py) library:
+The master of event data is defined in the [common-python](https://github.oslo.kommune.no/origo-dataplatform/common-python/blob/master/dataplatform/status/status.py) library:
 
 ### dataplatform/awslambda
-Exposes a [decorator](https://github.oslo.kommune.no/origo-dataplatform/common-python/blob/master/dataplatform/awslambda/status.py) to use in lambda functions. See [s3-writer](https://github.oslo.kommune.no/origo-dataplatform/s3-writer/blob/master/handlers/s3_writer.py) for an example of using `@status_wrapper`. This will send a status to the status API after execution of the handler is done. The minimum that should be done is to set `trace_status` and `trace_event_status` keys on the status object, if not the API will end up with `na` values.
+Exposes a [decorator](https://github.oslo.kommune.no/origo-dataplatform/common-python/blob/master/dataplatform/awslambda/status.py) to use in lambda functions. See [s3-writer](https://github.oslo.kommune.no/origo-dataplatform/s3-writer/blob/master/handlers/s3_writer.py) for an example of using `@status_wrapper`. This will send a status to the status API after execution of the handler is done. The minimum that should be done is to set `domain` and `domain_id` on the status object using `status_add(domain="dataset", ...)`.
 
-The library expose some `status_*` functions that can be used as shorthand functions in your lambda function to set the correct state of the execution, example: `status_end_continue(status_body={"files_incoming": []})`
+Setting the `status_body` with `status_add(status_body={"files_incoming": [], "files_outgoing": [], "other": "relevant_information"})`, the user can retrieve information on what has happened in each step going through the system. Generally it is best practice to log as much you can to the `status_body` field in order for the end-user to be able to trace what has happened to the data.
 
+If the lambda handler fails (e.g. throws an unhandled exception), the wrapper automatically updates the event status to `FAILED` and trace status to `FINISHED`.
 
 ### dataplatform/status
-Holds the payload and constants that are the master values for the status API. Can be used self-contained to send status from a non-lambda function.
+Holds the payload and constants that are the master values for the status API. Can be [used self-contained](https://github.oslo.kommune.no/origo-dataplatform/common-python#usage) to send status events from a non-lambda function.
+
 
 ## Data uploader
-The [data-uploader](https://github.oslo.kommune.no/origo-dataplatform/data-uploader/tree/master/uploader) creates a status ID whenever a file is uploaded via the API. The trace ID is returned to the user when uploaded. This trace ID is the one the pipeline-router (see below) will pick up and set as execution name.
+The [data-uploader](https://github.oslo.kommune.no/origo-dataplatform/data-uploader/tree/master/uploader) creates a trace ID whenever a file is uploaded via the API. The trace ID is returned to the user when uploaded. This trace ID is the one the pipeline-router (see below) will pick up and set as execution name.
 
 To extract the trace ID after uploading a file to a dataset via the origo CLI:
 ```
@@ -88,11 +88,6 @@ Each execution step in the state machine will now have access to the trace ID vi
 
 A [state-machine-event](https://github.oslo.kommune.no/origo-dataplatform/state-machine-event) lambda function is hooked up to cloudformation logs (see [dataplatform-config](https://github.oslo.kommune.no/origo-dataplatform/dataplatform-config/tree/master/devops/modules/observability/cloudwatch-state-machine-events) for wiring) that will pick up the end status for the state machine and post this to the status API. There is no need to set the end status from within the lambda function, only the state of each execution. This means you can get the end status of a file-upload without adding anything to the state machine functions.
 
-## Lambda
-Use the `status_*` functions exposed via [common-python](https://github.oslo.kommune.no/origo-dataplatform/common-python) to set the data for each Lambda exeuction.
-
-Log as much you can to the `status_body` key in order for the end-user to be able to trace what has happened to the data.
-
 ## SDK & CLI
 The status API is implemented in the SDK and exposed via the CLI:
 
@@ -101,11 +96,11 @@ The status API is implemented in the SDK and exposed via the CLI:
 ```
 $ origo status eide-origo-ng-85c9e5de-ac38-4b37-af8a-a86f08ce2bbb
 Status for: eide-origo-ng-85c9e5de-ac38-4b37-af8a-a86f08ce2bbb
-+------+----------------------------------------------------+--------------+--------------+
-| Done |                     Trace ID                       | Trace status | Event status |
-+------+----------------------------------------------------+--------------+--------------+
-| True | eide-origo-ng-85c9e5de-ac38-4b37-af8a-a86f08ce2bbb |   FINISHED   |      OK      |
-+------+----------------------------------------------------+--------------+--------------+
++------+----------------------------------------------------+--------------+--------------------+
+| Done |                     Trace ID                       | Trace status | Trace event status |
++------+----------------------------------------------------+--------------+--------------------+
+| True | eide-origo-ng-85c9e5de-ac38-4b37-af8a-a86f08ce2bbb | FINISHED     | OK                 |
++------+----------------------------------------------------+--------------+--------------------+
 ```
 ### Get the total status of an ID as pure json
 ```
