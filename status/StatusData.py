@@ -29,7 +29,6 @@ class StatusData:
             "domain": body["domain"],
             "domain_id": domain_id,
             "component": body["component"],
-            "user": body["user"],
             "start_time": body["start_time"],
             "end_time": body["end_time"],
             "trace_status": "STARTED",
@@ -42,6 +41,8 @@ class StatusData:
             item["meta"] = body["meta"]
         if body.get("operation"):
             item["operation"] = body["operation"]
+        if body.get("user"):
+            item["user"] = body["user"]
         if body.get("status_body"):
             item["status_body"] = body["status_body"]
 
@@ -81,7 +82,6 @@ class StatusData:
             "domain": body["domain"],
             "domain_id": domain_id,
             "component": body["component"],
-            "user": body["user"],
             "start_time": body["start_time"],
             "end_time": body["end_time"],
             "trace_status": body["trace_status"],
@@ -94,6 +94,8 @@ class StatusData:
             update_item["meta"] = body["meta"]
         if body.get("operation"):
             update_item["operation"] = body["operation"]
+        if body.get("user"):
+            update_item["user"] = body["user"]
         if body.get("status_body"):
             update_item["status_body"] = body["status_body"]
 
