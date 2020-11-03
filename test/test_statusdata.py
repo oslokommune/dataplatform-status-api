@@ -2,6 +2,7 @@ import boto3
 import re
 import json
 import pytest
+from copy import deepcopy
 from moto import mock_dynamodb2
 from status.StatusData import StatusData
 
@@ -58,6 +59,16 @@ status_body = {
     "trace_status": "OK",
     "trace_event_status": "STARTED",
 }
+
+status_body_no_optional_data = {
+    "domain": "my-app",
+    "component": "my-component",
+    "start_time": "2020",
+    "end_time": "2021",
+    "trace_status": "OK",
+    "trace_event_status": "STARTED",
+}
+
 status_body_legacy = {
     "application": "my-app",
     "application_id": "my-app-id",
@@ -90,6 +101,14 @@ class TestStatusData:
         matcher = re.compile("my-app-id-")
         assert matcher.match(result)
 
+    def test_create_item_no_optional_data(self, dynamodb, status_table):
+        s = StatusData()
+        status = deepcopy(status_body_no_optional_data)
+        status["domain_id"] = "my-app-id"
+        result = s.create_item(status)
+        matcher = re.compile("my-app-id-")
+        assert matcher.match(result)
+
     def test_get_status(self, dynamodb, status_table):
         s = StatusData()
         trace_id = s.create_item(status_body)
@@ -119,6 +138,11 @@ class TestStatusData:
         result = s.update_status("my-id", status_body)
         assert result["trace_id"] == "my-id"
         assert result["domain_id"] == "my-app-id"
+
+    def test_update_status_no_optional_data(self, dynamodb, status_table):
+        s = StatusData()
+        result = s.update_status("my-id", status_body_no_optional_data)
+        assert result["trace_id"] == "my-id"
 
     def test_update_status_legacy_field_names(self, dynamodb, status_table):
         s = StatusData()

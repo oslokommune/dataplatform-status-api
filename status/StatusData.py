@@ -28,29 +28,24 @@ class StatusData:
             "trace_event_id": trace_event_id,
             "domain": body["domain"],
             "domain_id": domain_id,
-            "component": body["component"],
-            "user": body["user"],
             "start_time": body["start_time"],
             "end_time": body["end_time"],
+            "component": body["component"],
             "trace_status": "STARTED",
             "trace_event_status": "OK",
         }
 
-        if body.get("s3_path"):
-            item["s3_path"] = body["s3_path"]
-        if body.get("meta"):
-            item["meta"] = body["meta"]
-        if body.get("operation"):
-            item["operation"] = body["operation"]
-        if body.get("status_body"):
-            item["status_body"] = body["status_body"]
+        optional = ["operation", "user", "s3_path", "status_body", "meta"]
+        for field_name in optional:
+            if field_name in body:
+                item[field_name] = body[field_name]
 
         db_response = self.table.put_item(Item=item)
 
         if db_response["ResponseMetadata"]["HTTPStatusCode"] == 200:
             return trace_id
         else:
-            raise ValueError(f"Was unable to create new status row for {domain_id}")
+            raise ValueError(f"Unable to create new trace for {domain_id}")
 
     def get_status(self, trace_id):
         response = self.table.query(KeyConditionExpression=Key("trace_id").eq(trace_id))
@@ -73,36 +68,29 @@ class StatusData:
     def update_status(self, trace_id, body):
         body = self._remap_field_names(body)
         trace_event_id = self.generate_event_uuid()
-        domain_id = body["domain_id"]
 
         update_item = {
             "trace_id": trace_id,
             "trace_event_id": trace_event_id,
             "domain": body["domain"],
-            "domain_id": domain_id,
             "component": body["component"],
-            "user": body["user"],
             "start_time": body["start_time"],
             "end_time": body["end_time"],
             "trace_status": body["trace_status"],
             "trace_event_status": body["trace_event_status"],
         }
 
-        if body.get("s3_path"):
-            update_item["s3_path"] = body["s3_path"]
-        if body.get("meta"):
-            update_item["meta"] = body["meta"]
-        if body.get("operation"):
-            update_item["operation"] = body["operation"]
-        if body.get("status_body"):
-            update_item["status_body"] = body["status_body"]
+        optional = ["domain_id", "operation", "user", "s3_path", "status_body", "meta"]
+        for field_name in optional:
+            if field_name in body:
+                update_item[field_name] = body[field_name]
 
         db_response = self.table.put_item(Item=update_item)
 
         if db_response["ResponseMetadata"]["HTTPStatusCode"] == 200:
             return update_item
         else:
-            raise ValueError(f"Was unable to update new status row for {trace_id}")
+            raise ValueError(f"Unable to update status for trace {trace_id}")
 
     def _remap_field_names(self, body):
         """
@@ -113,13 +101,13 @@ class StatusData:
             "id": "trace_id",
             "application": "domain",
             "application_id": "domain_id",
+            "date_started": "start_time",
+            "date_end": "end_time",
             "handler": "component",
             "run_status": "trace_status",
             "status": "trace_event_status",
-            "body": "status_body",
             "s3path": "s3_path",
-            "date_started": "start_time",
-            "date_end": "end_time",
+            "body": "status_body",
         }
         legacy_fields = list(set(body).intersection(field_map))
         log_add(remapped_legacy_fields=legacy_fields)
