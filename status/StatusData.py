@@ -74,13 +74,11 @@ class StatusData:
     def update_status(self, trace_id, body):
         body = self._remap_field_names(body)
         trace_event_id = self.generate_event_uuid()
-        domain_id = body["domain_id"]
 
         update_item = {
             "trace_id": trace_id,
             "trace_event_id": trace_event_id,
             "domain": body["domain"],
-            "domain_id": domain_id,
             "component": body["component"],
             "start_time": body["start_time"],
             "end_time": body["end_time"],
@@ -88,6 +86,8 @@ class StatusData:
             "trace_event_status": body["trace_event_status"],
         }
 
+        if body.get("domain_id"):
+            update_item["domain_id"] = body["domain_id"]
         if body.get("s3_path"):
             update_item["s3_path"] = body["s3_path"]
         if body.get("meta"):
