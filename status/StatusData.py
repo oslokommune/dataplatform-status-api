@@ -28,9 +28,9 @@ class StatusData:
             "trace_event_id": trace_event_id,
             "domain": body["domain"],
             "domain_id": domain_id,
-            "component": body["component"],
             "start_time": body["start_time"],
             "end_time": body["end_time"],
+            "component": body["component"],
             "trace_status": "STARTED",
             "trace_event_status": "OK",
         }
@@ -101,13 +101,13 @@ class StatusData:
             "id": "trace_id",
             "application": "domain",
             "application_id": "domain_id",
+            "date_started": "start_time",
+            "date_end": "end_time",
             "handler": "component",
             "run_status": "trace_status",
             "status": "trace_event_status",
-            "body": "status_body",
             "s3path": "s3_path",
-            "date_started": "start_time",
-            "date_end": "end_time",
+            "body": "status_body",
         }
         legacy_fields = list(set(body).intersection(field_map))
         log_add(remapped_legacy_fields=legacy_fields)
