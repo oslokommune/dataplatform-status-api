@@ -51,7 +51,7 @@ class StatusData:
         if db_response["ResponseMetadata"]["HTTPStatusCode"] == 200:
             return trace_id
         else:
-            raise ValueError(f"Was unable to create new status row for {domain_id}")
+            raise ValueError(f"Unable to create new trace for {domain_id}")
 
     def get_status(self, trace_id):
         response = self.table.query(KeyConditionExpression=Key("trace_id").eq(trace_id))
@@ -104,7 +104,7 @@ class StatusData:
         if db_response["ResponseMetadata"]["HTTPStatusCode"] == 200:
             return update_item
         else:
-            raise ValueError(f"Was unable to update new status row for {trace_id}")
+            raise ValueError(f"Unable to update status for trace {trace_id}")
 
     def _remap_field_names(self, body):
         """
