@@ -2,6 +2,7 @@ import boto3
 import re
 import json
 import pytest
+from copy import deepcopy
 from moto import mock_dynamodb2
 from status.StatusData import StatusData
 
@@ -61,7 +62,6 @@ status_body = {
 
 status_body_no_optional_data = {
     "domain": "my-app",
-    "domain_id": "my-app-id",
     "component": "my-component",
     "start_time": "2020",
     "end_time": "2021",
@@ -103,7 +103,9 @@ class TestStatusData:
 
     def test_create_item_no_optional_data(self, dynamodb, status_table):
         s = StatusData()
-        result = s.create_item(status_body_no_optional_data)
+        status = deepcopy(status_body_no_optional_data)
+        status["domain_id"] = "my-app-id"
+        result = s.create_item(status)
         matcher = re.compile("my-app-id-")
         assert matcher.match(result)
 
@@ -141,7 +143,6 @@ class TestStatusData:
         s = StatusData()
         result = s.update_status("my-id", status_body_no_optional_data)
         assert result["trace_id"] == "my-id"
-        assert result["domain_id"] == "my-app-id"
 
     def test_update_status_legacy_field_names(self, dynamodb, status_table):
         s = StatusData()
