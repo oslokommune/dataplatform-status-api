@@ -35,16 +35,10 @@ class StatusData:
             "trace_event_status": "OK",
         }
 
-        if body.get("s3_path"):
-            item["s3_path"] = body["s3_path"]
-        if body.get("meta"):
-            item["meta"] = body["meta"]
-        if body.get("operation"):
-            item["operation"] = body["operation"]
-        if body.get("user"):
-            item["user"] = body["user"]
-        if body.get("status_body"):
-            item["status_body"] = body["status_body"]
+        optional = ["operation", "user", "s3_path", "status_body", "meta"]
+        for field_name in optional:
+            if field_name in body:
+                item[field_name] = body[field_name]
 
         db_response = self.table.put_item(Item=item)
 
@@ -86,18 +80,10 @@ class StatusData:
             "trace_event_status": body["trace_event_status"],
         }
 
-        if body.get("domain_id"):
-            update_item["domain_id"] = body["domain_id"]
-        if body.get("s3_path"):
-            update_item["s3_path"] = body["s3_path"]
-        if body.get("meta"):
-            update_item["meta"] = body["meta"]
-        if body.get("operation"):
-            update_item["operation"] = body["operation"]
-        if body.get("user"):
-            update_item["user"] = body["user"]
-        if body.get("status_body"):
-            update_item["status_body"] = body["status_body"]
+        optional = ["domain_id", "operation", "user", "s3_path", "status_body", "meta"]
+        for field_name in optional:
+            if field_name in body:
+                update_item[field_name] = body[field_name]
 
         db_response = self.table.put_item(Item=update_item)
 
