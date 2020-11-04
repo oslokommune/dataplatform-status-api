@@ -10,9 +10,9 @@ class StatusData:
         dynamodb = boto3.resource("dynamodb", "eu-west-1")
         self.table = dynamodb.Table("dataplatform-status")
 
-    def generate_uuid(self, dataset):
+    def generate_uuid(self, dataset_id):
         new_uuid = uuid.uuid4()
-        return f"{dataset}-{new_uuid}"[0:80]
+        return f"{dataset_id}-{new_uuid}"[0:80]
 
     def generate_event_uuid(self):
         return str(uuid.uuid4())
@@ -20,7 +20,8 @@ class StatusData:
     def create_item(self, body):
         body = self._remap_field_names(body)
         domain_id = body["domain_id"]
-        trace_id = self.generate_uuid(domain_id)
+        dataset_id = domain_id.split("/")[0]
+        trace_id = self.generate_uuid(dataset_id)
         trace_event_id = self.generate_event_uuid()
 
         item = {
