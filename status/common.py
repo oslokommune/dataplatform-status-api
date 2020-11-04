@@ -23,7 +23,7 @@ def is_owner(event, item):
         return SimpleAuth().is_owner(event, dataset_id)
 
     if item["domain"] == "dataset":
-        dataset_id = item["domain_id"]
+        dataset_id = item["domain_id"].split("/")[0]
         return SimpleAuth().is_owner(event, dataset_id)
 
     return False
