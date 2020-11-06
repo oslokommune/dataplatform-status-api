@@ -17,15 +17,8 @@ provider:
     - ${ssm:/dataplatform/shared/python-base-layer-arn}
   rolePermissionsBoundary: "arn:aws:iam::#{AWS::AccountId}:policy/oslokommune/oslokommune-boundary"
   iamManagedPolicies:
-    - Fn::Join:
-      - ':'
-      - - 'arn:aws:iam:'
-        - Ref: AWS::AccountId
-        - 'policy/status-api-policy'
-    - Fn::Join:
-        - ':'
-        - - 'arn:aws:iam::aws'
-          - 'policy/AWSXRayDaemonWriteAccess'
+    - 'arn:aws:iam::#{AWS::AccountId}:policy/status-api-policy'
+    - 'arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess'
   tags:
     GIT_REV: ${git:branch}:${git:sha1}
   environment:
@@ -55,13 +48,6 @@ custom:
     endpoint: ${ssm:/dataplatform/shared/logs-elasticsearch-endpoint}
     index: dataplatform-services
     filterPattern: '{ $.function_name = "*" }'
-  documentation:
-    info:
-      version: ${git:sha1}
-      title: 'Status-api'
-      description: 'Status-api for dataplattform'
-    authorizers:
-      - ${file(serverless/kc-authorizer.yaml)}
   deploymentBucket:
     prod: ok-origo-dataplatform-config-prod
     dev: ok-origo-dataplatform-config-dev

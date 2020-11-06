@@ -38,7 +38,7 @@ test: $(BUILD_VENV)/bin/tox
 
 .PHONY: deploy
 deploy: init test login-dev
-	sls deploy --verbose --stage $${STAGE:-dev} --aws-profile $(.DEV_PROFILE)
+	sls deploy --stage $${STAGE:-dev} --aws-profile $(.DEV_PROFILE)
 
 .PHONY: deploy-prod
 deploy-prod: init format is-git-clean test login-prod
