@@ -1,7 +1,7 @@
+from status import common
 from status.get_status import handler
 from status.StatusData import StatusData
 from botocore.exceptions import ClientError
-from auth import SimpleAuth
 
 import json
 
@@ -28,7 +28,7 @@ class TestGetStatus:
             ]
         }
         mocker.patch.object(StatusData, "get_status", return_value=ret)
-        mocker.patch.object(SimpleAuth, "is_owner", return_value=True)
+        mocker.patch.object(common, "_is_dataset_owner", return_value=True)
         result = handler(event, empty_context)
         body = json.loads(result["body"])
         assert len(body) == 2

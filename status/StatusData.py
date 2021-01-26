@@ -2,7 +2,7 @@ import uuid
 import boto3
 from boto3.dynamodb.conditions import Key
 
-from dataplatform.awslambda.logging import log_add
+from okdata.aws.logging import log_add
 
 
 class StatusData:
