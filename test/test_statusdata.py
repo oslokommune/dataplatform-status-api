@@ -58,6 +58,7 @@ status_body = {
     "s3_path": "/my/path",
     "trace_status": "OK",
     "trace_event_status": "STARTED",
+    "errors": {"message": {"nb": "Problem", "en": "Problem"}},
 }
 
 status_body_no_optional_data = {
