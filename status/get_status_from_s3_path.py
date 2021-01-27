@@ -2,7 +2,7 @@ import json
 import base64
 from botocore.exceptions import ClientError
 from aws_xray_sdk.core import patch_all, xray_recorder
-from dataplatform.awslambda.logging import (
+from okdata.aws.logging import (
     logging_wrapper,
     log_add,
     log_exception,

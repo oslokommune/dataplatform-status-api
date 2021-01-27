@@ -1,6 +1,6 @@
 import json
 from aws_xray_sdk.core import patch_all, xray_recorder
-from dataplatform.awslambda.logging import logging_wrapper, log_add
+from okdata.aws.logging import logging_wrapper, log_add
 from status.StatusData import StatusData
 from status.common import response, response_error, is_owner
 
