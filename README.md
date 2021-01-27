@@ -61,7 +61,7 @@ The main fields in the database:
 | trace_id | string | The ID used to trace connected events throughout the system (N-entries). ***Primary partition key***.| `my-dataset-uu-ii-dd` |
 | trace_event_id | uuid | Unique ID per event (many `trace_event_id` per `trace_id`). | `uu-ii-dd` |
 | domain | string | The domain that this status pertains to, e.g. `dataset` for publishing data or events to a dataset | `dataset` |
-| domain_id | string | A domain specific ID to be able to look up the owner or source. | `dataset.name` |
+| domain_id | string | A domain specific ID to be able to look up the owner or source. Includes version number. | `dataset.name/version` |
 | start_time | time | Start of execution. ***Primary sort key***. | `2020-03-02T12:34:23.042400` |
 | end_time | time | End of execution | `2020-03-02T12:34:24.042400` |
 | component | string | The component that is the source of the event. | `data-uploader`, `s3-writer` |
