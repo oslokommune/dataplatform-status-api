@@ -1,10 +1,13 @@
+from status import common
 from status.get_status_from_s3_path import handler
 from status.StatusData import StatusData
-from auth import SimpleAuth
 import json
 
 # s3path: echo -n "my/path/to/file (2020).xlsx" | base64
-event = {"pathParameters": {"s3_path": "bXkvcGF0aC90by9maWxlICgyMDIwKS54bHN4"}}
+event = {
+    "headers": {"Authorization": ""},
+    "pathParameters": {"s3_path": "bXkvcGF0aC90by9maWxlICgyMDIwKS54bHN4"},
+}
 empty_context = {}
 
 
@@ -16,7 +19,7 @@ class TestGetStatusFromS3Path:
             "domain_id": "my-dataset",
         }
         mocker.patch.object(StatusData, "get_status_from_s3_path", return_value=ret)
-        mocker.patch.object(SimpleAuth, "is_owner", return_value=True)
+        mocker.patch.object(common, "_is_dataset_owner", return_value=True)
         result = handler(event, empty_context)
         body = json.loads(result["body"])
         assert body["id"] == "my-status-id"
@@ -30,7 +33,7 @@ class TestGetStatusFromS3Path:
             "domain_id": "my-dataset",
         }
         mocker.patch.object(StatusData, "get_status_from_s3_path", return_value=ret)
-        mocker.patch.object(SimpleAuth, "is_owner", return_value=False)
+        mocker.patch.object(common, "_is_dataset_owner", return_value=False)
         result = handler(event, empty_context)
         body = json.loads(result["body"])
         assert "message" in body

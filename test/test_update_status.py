@@ -1,6 +1,6 @@
+from status import common
 from status.update_status import handler
 from status.StatusData import StatusData
-from auth import SimpleAuth
 
 import json
 
@@ -25,7 +25,7 @@ class TestUpdateStatus:
             ]
         }
         mocker.patch.object(StatusData, "get_status", return_value=ret)
-        mocker.patch.object(SimpleAuth, "is_owner", return_value=True)
+        mocker.patch.object(common, "_is_dataset_owner", return_value=True)
         mocker.patch.object(
             StatusData,
             "update_status",
