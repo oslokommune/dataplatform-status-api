@@ -64,13 +64,17 @@ The main fields in the database:
 | domain_id | string | A domain specific ID to be able to look up the owner or source. Includes version number. | `dataset.name/version` |
 | start_time | time | Start of execution. ***Primary sort key***. | `2020-03-02T12:34:23.042400` |
 | end_time | time | End of execution | `2020-03-02T12:34:24.042400` |
-| component | string | The component that is the source of the event. | `data-uploader`, `s3-writer` |
 | trace_status | string | Overall status for the trace ID. | `CONTINUE`, `FINISHED` |
 | trace_event_status | string | Status for the `trace_event_id`. | `OK`, `FAILED` |
 | user | string | The user that is used in `handler` to execute the event | `service-user-s3-writer`, `ooo123456` |
-| s3_path | string | Path of the uploaded file. | `incoming/yellow/my-dataset/version/edition/file.xls` |
+| component | string | The component that is the source of the event. | `data-uploader`, `s3-writer` |
+| operation | string | TBD | `TBD` |
 | status_body | object | Namespace where the component can add data relevant for the execution. | `{"files_incoming": [], "files_outgoing": []}`|
 | meta | object | Metadata about the execution, such as Git revision of the component. | `{"git_rev": ...}` |
+| s3_path | string | Path of the uploaded file. | `incoming/yellow/my-dataset/version/edition/file.xls` |
+| duration | TBD | TBD | `TBD` |
+| exception | TBD | TBD | `TBD` |
+| errors | object | Error messages to be read by the end user. | `[{"message": {"nb": "", "en": ""}, ...]` |
 
 **Note**: While the `trace_event_id` is unique to each event (row), the
 `trace_id` is only unique to a *group of connected events* ("a trace").
