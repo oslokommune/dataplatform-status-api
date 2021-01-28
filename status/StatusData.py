@@ -31,12 +31,21 @@ class StatusData:
             "domain_id": domain_id,
             "start_time": body["start_time"],
             "end_time": body["end_time"],
-            "component": body["component"],
             "trace_status": "STARTED",
             "trace_event_status": "OK",
+            "component": body["component"],
         }
 
-        optional = ["operation", "user", "s3_path", "status_body", "meta"]
+        optional = [
+            "user",
+            "operation",
+            "status_body",
+            "meta",
+            "s3_path",
+            "duration",
+            "exception",
+            "errors",
+        ]
         for field_name in optional:
             if field_name in body:
                 item[field_name] = body[field_name]
@@ -74,14 +83,25 @@ class StatusData:
             "trace_id": trace_id,
             "trace_event_id": trace_event_id,
             "domain": body["domain"],
-            "component": body["component"],
             "start_time": body["start_time"],
             "end_time": body["end_time"],
             "trace_status": body["trace_status"],
             "trace_event_status": body["trace_event_status"],
+            "component": body["component"],
         }
 
-        optional = ["domain_id", "operation", "user", "s3_path", "status_body", "meta"]
+        optional = [
+            "domain_id",
+            "user",
+            "operation",
+            "status_body",
+            "meta",
+            "s3_path",
+            "duration",
+            "exception",
+            "errors",
+        ]
+
         for field_name in optional:
             if field_name in body:
                 update_item[field_name] = body[field_name]

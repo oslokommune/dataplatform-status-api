@@ -58,6 +58,7 @@ status_body = {
     "s3_path": "/my/path",
     "trace_status": "OK",
     "trace_event_status": "STARTED",
+    "errors": {"message": {"nb": "Problem", "en": "Problem"}},
 }
 
 status_body_no_optional_data = {
@@ -114,6 +115,14 @@ class TestStatusData:
         trace_id = s.create_item(status_body)
         result = s.get_status(trace_id)
         assert result["Items"][0]["trace_id"] == trace_id
+
+    def test_get_status_optionals(self, dynamodb, status_table):
+        s = StatusData()
+        trace_id = s.create_item(status_body)
+        result = s.get_status(trace_id)["Items"][0]
+        assert result["status_body"] == {"relevant": "data"}
+        assert result["errors"] == {"message": {"nb": "Problem", "en": "Problem"}}
+        assert result["trace_status"] == "STARTED"
 
     def test_get_status_not_found(self, dynamodb, status_table):
         s = StatusData()
