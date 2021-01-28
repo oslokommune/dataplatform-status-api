@@ -72,8 +72,8 @@ The main fields in the database:
 | status_body | object | Namespace where the component can add data relevant for the execution. | `{"files_incoming": [], "files_outgoing": []}`|
 | meta | object | Metadata about the execution, such as Git revision of the component. | `{"git_rev": ...}` |
 | s3_path | string | Path of the uploaded file. | `incoming/yellow/my-dataset/version/edition/file.xls` |
-| duration | int | The execution time of the step | `123` |
-| exception | string | An exception from the execution | `ZeroDivisionError: division by zero` |
+| duration | number | Duration of execution in milliseconds.| `123` |
+| exception | object | Details of exception that has occured. | `ZeroDivisionError: division by zero` |
 | errors | object | Error messages to be read by the end user. | `[{"message": {"nb": "", "en": ""}, ...]` |
 
 **Note**: While the `trace_event_id` is unique to each event (row), the
