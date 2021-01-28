@@ -68,12 +68,12 @@ The main fields in the database:
 | trace_event_status | string | Status for the `trace_event_id`. | `OK`, `FAILED` |
 | user | string | The user that is used in `handler` to execute the event | `service-user-s3-writer`, `ooo123456` |
 | component | string | The component that is the source of the event. | `data-uploader`, `s3-writer` |
-| operation | string | TBD | `TBD` |
+| operation | string | The operation (e.g. method) performed by the component, e.g. Lambda function name | `copy` |
 | status_body | object | Namespace where the component can add data relevant for the execution. | `{"files_incoming": [], "files_outgoing": []}`|
 | meta | object | Metadata about the execution, such as Git revision of the component. | `{"git_rev": ...}` |
 | s3_path | string | Path of the uploaded file. | `incoming/yellow/my-dataset/version/edition/file.xls` |
-| duration | TBD | TBD | `TBD` |
-| exception | TBD | TBD | `TBD` |
+| duration | int | The execution time of the step | `123` |
+| exception | string | An exception from the execution | `ZeroDivisionError: division by zero` |
 | errors | object | Error messages to be read by the end user. | `[{"message": {"nb": "", "en": ""}, ...]` |
 
 **Note**: While the `trace_event_id` is unique to each event (row), the
