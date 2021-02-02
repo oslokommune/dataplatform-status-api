@@ -1,6 +1,7 @@
 import os
-import json
+
 import requests
+import simplejson
 
 AUTHORIZER_API = os.environ["AUTHORIZER_API"]
 
@@ -15,7 +16,7 @@ def response(code, body):
 
 def response_error(code, message):
     body = {"message": message}
-    return http_response(code, json.dumps(body))
+    return http_response(code, simplejson.dumps(body))
 
 
 def _is_dataset_owner(token, dataset_id):

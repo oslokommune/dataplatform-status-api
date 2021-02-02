@@ -13,5 +13,11 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.oslo.kommune.no/origo-dataplatform/status-api",
-    install_requires=["boto3", "aws-xray-sdk", "requests", "okdata-aws"],
+    install_requires=[
+        "aws-xray-sdk",
+        "boto3",
+        "okdata-aws",
+        "requests",
+        "simplejson",
+    ],
 )
