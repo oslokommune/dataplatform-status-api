@@ -1,6 +1,7 @@
-import json
+import simplejson
 from aws_xray_sdk.core import patch_all, xray_recorder
 from okdata.aws.logging import logging_wrapper, log_add
+
 from status.StatusData import StatusData
 from status.common import response, response_error, is_owner
 
@@ -14,7 +15,7 @@ def handler(event, context):
     trace_id = params["trace_id"]
     log_add(trace_id=trace_id)
 
-    content = json.loads(event["body"])
+    content = simplejson.loads(event["body"])
 
     db = StatusData()
     result = db.get_status(trace_id)
@@ -29,4 +30,4 @@ def handler(event, context):
     if not caller_is_owner:
         return response_error(403, "Access denied")
     item = db.update_status(trace_id, content)
-    return response(200, json.dumps(item))
+    return response(200, simplejson.dumps(item))

@@ -1,11 +1,12 @@
-import json
+import simplejson
 from aws_xray_sdk.core import patch_all, xray_recorder
+from botocore.exceptions import ClientError
 from okdata.aws.logging import (
     logging_wrapper,
     log_add,
     log_exception,
 )
-from botocore.exceptions import ClientError
+
 from status.common import response, response_error, is_owner
 from status.StatusData import StatusData
 
@@ -32,7 +33,7 @@ def handler(event, context):
         log_add(is_owner=caller_is_owner)
         if not caller_is_owner:
             return response_error(403, "Access denied")
-        return response(200, json.dumps(items))
+        return response(200, simplejson.dumps(items))
 
     except ClientError as ce:
         log_exception(ce)

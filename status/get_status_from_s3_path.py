@@ -1,12 +1,14 @@
-import json
 import base64
-from botocore.exceptions import ClientError
+
+import simplejson
 from aws_xray_sdk.core import patch_all, xray_recorder
+from botocore.exceptions import ClientError
 from okdata.aws.logging import (
     logging_wrapper,
     log_add,
     log_exception,
 )
+
 from status.StatusData import StatusData
 from status.common import response, response_error, is_owner
 
@@ -38,7 +40,7 @@ def handler(event, context):
                 "id": item["trace_id"],
                 "trace_id": item["trace_id"],
             }
-            return response(200, json.dumps(ret))
+            return response(200, simplejson.dumps(ret))
         error = "Access denied"
         return response_error(403, error)
 
