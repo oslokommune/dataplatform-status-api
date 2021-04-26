@@ -19,5 +19,6 @@ setup(
         "okdata-aws",
         "requests",
         "simplejson",
+        "okdata-resource-auth",
     ],
 )
