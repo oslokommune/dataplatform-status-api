@@ -7,10 +7,17 @@ from okdata.aws.logging import (
     log_exception,
 )
 
-from status.common import response, response_error, is_owner
+from status.common import (
+    response,
+    response_error,
+    extract_dataset_id,
+    extract_bearer_token,
+)
 from status.StatusData import StatusData
+from okdata.resource_auth import ResourceAuthorizer
 
 patch_all()
+resource_authorizer = ResourceAuthorizer()
 
 
 @logging_wrapper
@@ -28,12 +35,18 @@ def handler(event, context):
             error_msg = f"Could not find item: {trace_id}"
             return response_error(404, error_msg)
 
-        items = result["Items"]
-        caller_is_owner = is_owner(event, items[0])
-        log_add(is_owner=caller_is_owner)
-        if not caller_is_owner:
+        status_items = result["Items"]
+        dataset_id = extract_dataset_id(status_items[0])
+        bearer_token = extract_bearer_token(event)
+
+        if not resource_authorizer.has_access(
+            bearer_token,
+            "okdata:dataset:write",
+            f"okdata:dataset:{dataset_id}",
+            use_whitelist=True,
+        ):
             return response_error(403, "Access denied")
-        return response(200, simplejson.dumps(items))
+        return response(200, simplejson.dumps(status_items))
 
     except ClientError as ce:
         log_exception(ce)
