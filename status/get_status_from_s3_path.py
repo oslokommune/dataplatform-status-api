@@ -8,11 +8,18 @@ from okdata.aws.logging import (
     log_add,
     log_exception,
 )
+from okdata.resource_auth import ResourceAuthorizer
 
 from status.StatusData import StatusData
-from status.common import response, response_error, is_owner
+from status.common import (
+    response,
+    response_error,
+    extract_bearer_token,
+    extract_dataset_id,
+)
 
 patch_all()
+resource_authorizer = ResourceAuthorizer()
 
 
 @logging_wrapper
@@ -26,19 +33,25 @@ def handler(event, context):
     db = StatusData()
 
     try:
-        item = db.get_status_from_s3_path(path)
-        if item is None:
+        status_item = db.get_status_from_s3_path(path)
+        if status_item is None:
             error = "Could not find item"
             return response_error(404, error)
 
-        caller_is_owner = is_owner(event, item)
-        log_add(trace_id=item["trace_id"], is_owner=caller_is_owner)
-        if is_owner(event, item):
+        dataset_id = extract_dataset_id(status_item)
+        bearer_token = extract_bearer_token(event)
+        log_add(trace_id=status_item["trace_id"])
+        if dataset_id and resource_authorizer.has_access(
+            bearer_token,
+            "okdata:dataset:write",
+            f"okdata:dataset:{dataset_id}",
+            use_whitelist=True,
+        ):
             ret = {
                 # TODO: Return both id and trace_id until
                 # all clients are updated
-                "id": item["trace_id"],
-                "trace_id": item["trace_id"],
+                "id": status_item["trace_id"],
+                "trace_id": status_item["trace_id"],
             }
             return response(200, simplejson.dumps(ret))
         error = "Access denied"

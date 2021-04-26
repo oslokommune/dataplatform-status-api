@@ -1,11 +1,10 @@
 from decimal import Decimal
+import json
 
 from status.get_status import handler
 from status.StatusData import StatusData
 from botocore.exceptions import ClientError
 import test.test_data as test_data
-
-import json
 
 event = {
     "headers": {"Authorization": f"bearer {test_data.bearer_token_with_access}"},
