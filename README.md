@@ -88,7 +88,7 @@ The master of event data is defined in the
 Exposes a
 [decorator](https://github.com/oslokommune/okdata-aws/blob/master/okdata/aws/status/wrapper.py)
 to use in lambda functions. See
-[s3-writer](https://github.oslo.kommune.no/origo-dataplatform/s3-writer/blob/master/handlers/s3_writer.py)
+[s3-writer](https://github.com/oslokommune/okdata-pipeline/blob/master/okdata/pipeline/writers/s3/handlers.py)
 for an example of using `@status_wrapper`. This will send a status to the
 status API after execution of the handler is done. The minimum that should be
 done is to set `domain` and `domain_id` on the status object using
