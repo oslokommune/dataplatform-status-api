@@ -34,13 +34,14 @@ def handler(event, context):
     status_items = result["Items"]
     dataset_id = extract_dataset_id(status_items[0])
     bearer_token = extract_bearer_token(event)
-
-    if not resource_authorizer.has_access(
+    log_add(dataset_id=dataset_id)
+    if dataset_id and resource_authorizer.has_access(
         bearer_token,
         "okdata:dataset:write",
         f"okdata:dataset:{dataset_id}",
         use_whitelist=True,
     ):
-        return response_error(403, "Access denied")
-    item = db.update_status(trace_id, content)
-    return response(200, simplejson.dumps(item))
+        item = db.update_status(trace_id, content)
+        return response(200, simplejson.dumps(item))
+
+    return response_error(403, "Access denied")

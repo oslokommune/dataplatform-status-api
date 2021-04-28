@@ -40,7 +40,7 @@ def handler(event, context):
 
         dataset_id = extract_dataset_id(status_item)
         bearer_token = extract_bearer_token(event)
-        log_add(trace_id=status_item["trace_id"])
+        log_add(trace_id=status_item["trace_id"], dataset_id=dataset_id)
         if dataset_id and resource_authorizer.has_access(
             bearer_token,
             "okdata:dataset:write",

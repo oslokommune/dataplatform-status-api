@@ -27,17 +27,17 @@ def handler(event, context):
     try:
         bearer_token = extract_bearer_token(event)
         dataset_id = extract_dataset_id(status_item)
-        if not resource_authorizer.has_access(
+        log_add(dataset_id=dataset_id)
+        if dataset_id and resource_authorizer.has_access(
             bearer_token,
             "okdata:dataset:write",
             f"okdata:dataset:{dataset_id}",
             use_whitelist=True,
         ):
-            return response_error(403, "Access denied")
-
-        trace_id = db.create_item(status_item)
-        log_add(trace_id=trace_id)
-        return response(200, simplejson.dumps({"trace_id": trace_id}))
+            trace_id = db.create_item(status_item)
+            log_add(trace_id=trace_id)
+            return response(200, simplejson.dumps({"trace_id": trace_id}))
+        return response_error(403, "Access denied")
     except ValueError as ve:
         log_exception(ve)
         error_msg = f"Could not create status: {str(ve)}"

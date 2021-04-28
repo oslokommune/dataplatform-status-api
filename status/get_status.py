@@ -38,15 +38,15 @@ def handler(event, context):
         status_items = result["Items"]
         dataset_id = extract_dataset_id(status_items[0])
         bearer_token = extract_bearer_token(event)
-
-        if not resource_authorizer.has_access(
+        log_add(dataset_id=dataset_id)
+        if dataset_id and resource_authorizer.has_access(
             bearer_token,
             "okdata:dataset:write",
             f"okdata:dataset:{dataset_id}",
             use_whitelist=True,
         ):
-            return response_error(403, "Access denied")
-        return response(200, simplejson.dumps(status_items))
+            return response(200, simplejson.dumps(status_items))
+        return response_error(403, "Access denied")
 
     except ClientError as ce:
         log_exception(ce)
