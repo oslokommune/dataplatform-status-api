@@ -1,19 +1,19 @@
-from status import common
+import json
+
 from status.update_status import handler
 from status.StatusData import StatusData
-
-import json
+import test.test_data as test_data
 
 event = {
     "pathParameters": {"trace_id": "uu-ii-dd"},
     "body": json.dumps({}),
-    "headers": {"Authorization": ""},
+    "headers": {"Authorization": f"bearer {test_data.bearer_token_with_access}"},
 }
 empty_context = {}
 
 
 class TestUpdateStatus:
-    def test_update_status_success(self, mocker):
+    def test_update_status_success(self, mocker, mock_auth):
         ret = {
             "Items": [
                 {
@@ -25,7 +25,6 @@ class TestUpdateStatus:
             ]
         }
         mocker.patch.object(StatusData, "get_status", return_value=ret)
-        mocker.patch.object(common, "_is_dataset_owner", return_value=True)
         mocker.patch.object(
             StatusData,
             "update_status",
