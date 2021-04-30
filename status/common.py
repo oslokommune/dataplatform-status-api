@@ -40,3 +40,5 @@ def extract_dataset_id(status_item):
 
     if status_item["domain"] == "dataset":
         return status_item["domain_id"].split("/")[0]
+
+    return None
