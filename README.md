@@ -16,7 +16,7 @@ pip install -r requirements.txt
 3. Install Serverless plugins: `make init`
 4. Install Python toolchain: `python3 -m pip install (--user) tox black pip-tools`
    - If running with `--user` flag, add `$HOME/.local/bin` to `$PATH`
-   
+
 # Status architecture
 The status API defines a set of API endpoints to track events through a system
 from start to end. Initially created to track the exeuction state of a
