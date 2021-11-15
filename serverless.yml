@@ -68,4 +68,7 @@ functions:
 
 package:
   exclude:
-    - .tox/**
+    - '**/*'
+  include:
+    - event/*.py
+    - status/*.py
