@@ -1,6 +1,4 @@
 handler: status.update_status.handler
-environment:
-  STAGE: ${self:provider.stage}
 events:
 - http:
     path: status/{trace_id}

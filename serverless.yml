@@ -22,13 +22,15 @@ provider:
     GIT_REV: ${git:branch}:${git:sha1}
   environment:
     GIT_REV: ${git:branch}:${git:sha1}
+    STAGE: ${self:provider.stage}
     AUTHORIZER_API: ${ssm:/dataplatform/shared/api-gateway-url}/simple-dataset-authorizer
     ENABLE_AUTH: true
     KEYCLOAK_SERVER: ${ssm:/dataplatform/shared/keycloak-server-url}
     KEYCLOAK_REALM: api-catalog
     RESOURCE_SERVER_CLIENT_ID: "okdata-resource-server"
-    CLIENT_ID: status-api
-    CLIENT_SECRET: ${ssm:/dataplatform/status-api/keycloak-client-secret~true}
+    OKDATA_ENVIRONMENT: ${self:provider.stage}
+    OKDATA_CLIENT_ID: status-api
+    OKDATA_CLIENT_SECRET: ${ssm:/dataplatform/status-api/keycloak-client-secret~true}
     SERVICE_NAME: ${self:service.name}
 plugins:
   - serverless-python-requirements
@@ -62,7 +64,11 @@ functions:
   get_status_from_s3_path: ${file(serverless/functions/get_status_from_s3_path.yaml)}
   update_status: ${file(serverless/functions/update_status.yaml)}
   create_status: ${file(serverless/functions/create_status.yaml)}
+  act_on_queue: ${file(serverless/functions/act_on_queue.yaml)}
 
 package:
   exclude:
-    - .tox/**
+    - '**/*'
+  include:
+    - event/*.py
+    - status/*.py

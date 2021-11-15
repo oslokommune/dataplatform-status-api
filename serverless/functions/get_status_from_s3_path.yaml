@@ -1,6 +1,4 @@
 handler: status.get_status_from_s3_path.handler
-environment:
-  STAGE: ${self:provider.stage}
 events:
 - http:
     path: status-from-path/{s3_path}
