@@ -33,11 +33,12 @@ provider:
     OKDATA_CLIENT_SECRET: ${ssm:/dataplatform/status-api/keycloak-client-secret~true}
     SERVICE_NAME: ${self:service.name}
 plugins:
+  - serverless-es-logs
+  - serverless-plugin-git-variables
+  - serverless-prune-plugin
+  - serverless-pseudo-parameters
   - serverless-python-requirements
   - serverless-scriptable-plugin
-  - serverless-plugin-git-variables
-  - serverless-pseudo-parameters
-  - serverless-es-logs
 
 resources:
   Description: |
@@ -48,6 +49,9 @@ custom:
   pythonRequirements:
     dockerizePip: non-linux
     usePoetry: false
+  prune:
+    automatic: true
+    number: 3
   esLogs:
     endpoint: ${ssm:/dataplatform/shared/logs-elasticsearch-endpoint}
     index: dataplatform-services
