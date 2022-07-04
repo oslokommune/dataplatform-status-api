@@ -79,4 +79,4 @@ custom:
     dev: ok-origo-dataplatform-config-dev
   keycloakArn:
     prod: arn:aws:lambda:${aws:region}:${aws:accountId}:function:keycloak-authorizer-prod-authenticate
-    dev: arn:aws:lambda:${aws::region}:${aws:accountId}:function:keycloak-authorizer-dev-authenticate
+    dev: arn:aws:lambda:${aws:region}:${aws:accountId}:function:keycloak-authorizer-dev-authenticate
