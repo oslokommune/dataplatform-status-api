@@ -1,9 +1,10 @@
-frameworkVersion: ">=2.10.0 <3.0.0"
+frameworkVersion: ">=3.14.0 <4.0.0"
+
 service: status-api
 
 provider:
   name: aws
-  runtime: python3.7
+  runtime: python3.9
   region: ${opt:region, 'eu-west-1'}
   endpointType: REGIONAL
   stage: ${opt:stage, 'dev'}
@@ -12,13 +13,16 @@ provider:
     name: ${self:custom.deploymentBucket.${self:provider.stage}, self:custom.deploymentBucket.dev}
     serverSideEncryption: AES256
   deploymentPrefix: deploy
+  logRetentionInDays: 90
   tracing:
     lambda: true
     apiGateway: true
-  rolePermissionsBoundary: "arn:aws:iam::#{AWS::AccountId}:policy/oslokommune/oslokommune-boundary"
-  iamManagedPolicies:
-    - 'arn:aws:iam::#{AWS::AccountId}:policy/status-api-policy'
-    - 'arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess'
+  iam:
+    role:
+      permissionsBoundary: "arn:aws:iam::${aws:accountId}:policy/oslokommune/oslokommune-boundary"
+      managedPolicies:
+        - 'arn:aws:iam::${aws:accountId}:policy/status-api-policy'
+        - 'arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess'
   tags:
     GIT_REV: ${git:branch}:${git:sha1}
   environment:
@@ -31,13 +35,13 @@ provider:
     RESOURCE_SERVER_CLIENT_ID: "okdata-resource-server"
     OKDATA_ENVIRONMENT: ${self:provider.stage}
     OKDATA_CLIENT_ID: status-api
-    OKDATA_CLIENT_SECRET: ${ssm:/dataplatform/status-api/keycloak-client-secret~true}
-    SERVICE_NAME: ${self:service.name}
+    OKDATA_CLIENT_SECRET: ${ssm:/dataplatform/status-api/keycloak-client-secret}
+    SERVICE_NAME: ${self:service}
+
 plugins:
   - serverless-es-logs
   - serverless-plugin-git-variables
   - serverless-prune-plugin
-  - serverless-pseudo-parameters
   - serverless-python-requirements
   - serverless-scriptable-plugin
 
@@ -45,6 +49,19 @@ resources:
   Description: |
     ${self:service} ${git:branch}:${git:sha1}
     ${git:message}
+
+package:
+  patterns:
+    - '!**/*'
+    - event/*.py
+    - status/*.py
+
+functions:
+  get_status: ${file(serverless/functions/get_status.yaml)}
+  get_status_from_s3_path: ${file(serverless/functions/get_status_from_s3_path.yaml)}
+  update_status: ${file(serverless/functions/update_status.yaml)}
+  create_status: ${file(serverless/functions/create_status.yaml)}
+  act_on_queue: ${file(serverless/functions/act_on_queue.yaml)}
 
 custom:
   pythonRequirements:
@@ -61,19 +78,5 @@ custom:
     prod: ok-origo-dataplatform-config-prod
     dev: ok-origo-dataplatform-config-dev
   keycloakArn:
-    prod: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:keycloak-authorizer-prod-authenticate
-    dev: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:keycloak-authorizer-dev-authenticate
-
-functions:
-  get_status: ${file(serverless/functions/get_status.yaml)}
-  get_status_from_s3_path: ${file(serverless/functions/get_status_from_s3_path.yaml)}
-  update_status: ${file(serverless/functions/update_status.yaml)}
-  create_status: ${file(serverless/functions/create_status.yaml)}
-  act_on_queue: ${file(serverless/functions/act_on_queue.yaml)}
-
-package:
-  exclude:
-    - '**/*'
-  include:
-    - event/*.py
-    - status/*.py
+    prod: arn:aws:lambda:${aws:region}:${aws:accountId}:function:keycloak-authorizer-prod-authenticate
+    dev: arn:aws:lambda:${aws:region}:${aws:accountId}:function:keycloak-authorizer-dev-authenticate

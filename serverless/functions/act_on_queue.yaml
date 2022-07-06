@@ -1,4 +1,4 @@
 handler: event.handler.act_on_queue
 timeout: 60
 events:
-  - sns: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:dataplatform_state_machine_event
+  - sns: arn:aws:sns:${self:provider.region}:${aws:accountId}:dataplatform_state_machine_event
