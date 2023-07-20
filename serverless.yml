@@ -39,7 +39,6 @@ provider:
     SERVICE_NAME: ${self:service}
 
 plugins:
-  - serverless-es-logs
   - serverless-plugin-git-variables
   - serverless-prune-plugin
   - serverless-python-requirements
@@ -70,10 +69,6 @@ custom:
   prune:
     automatic: true
     number: 3
-  esLogs:
-    endpoint: ${ssm:/dataplatform/shared/logs-elasticsearch-endpoint}
-    index: dataplatform-services
-    filterPattern: '{ $.function_name = "*" }'
   deploymentBucket:
     prod: ok-origo-dataplatform-config-prod
     dev: ok-origo-dataplatform-config-dev
