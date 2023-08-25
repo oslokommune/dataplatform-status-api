@@ -1,8 +1,4 @@
-import os
-
 import simplejson
-
-AUTHORIZER_API = os.environ["AUTHORIZER_API"]
 
 
 def http_response(code, body):
