@@ -35,7 +35,7 @@ jmespath==1.0.1
     #   botocore
 jsonschema==4.6.1
     # via okdata-sdk
-okdata-aws==2.1.0
+okdata-aws==2.2.0
     # via status-api (setup.py)
 okdata-resource-auth==0.1.4
     # via status-api (setup.py)

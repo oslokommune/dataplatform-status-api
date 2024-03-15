@@ -1,7 +1,8 @@
 import json
-import pytest
 import re
+from unittest.mock import patch
 
+import pytest
 from okdata.aws.status import TraceStatus, TraceEventStatus
 from okdata.aws.status.sdk import Status
 
@@ -49,10 +50,11 @@ def test_send_event_with_succeeded_status(mocker):
     s = mocker.spy(Status, "add")
 
     trace_id = "trace-id-abc123-1a2b3c"
-    assert act_on_queue(
-        _make_event({"detail": {"status": "SUCCEEDED", "name": trace_id}}),
-        None,
-    )
+    with patch("event.handler.get_secret") as get_secret:
+        get_secret.return_value = "abc123"
+        assert act_on_queue(
+            _make_event({"detail": {"status": "SUCCEEDED", "name": trace_id}}), None
+        )
     assert (
         mocker.call(
             mocker.ANY,
@@ -72,9 +74,11 @@ def test_send_event_with_aborted_status(mocker):
     s = mocker.spy(Status, "add")
 
     trace_id = "trace-id-abc123-1a2b3c"
-    assert act_on_queue(
-        _make_event({"detail": {"status": "ABORTED", "name": trace_id}}), None
-    )
+    with patch("event.handler.get_secret") as get_secret:
+        get_secret.return_value = "abc123"
+        assert act_on_queue(
+            _make_event({"detail": {"status": "ABORTED", "name": trace_id}}), None
+        )
     assert (
         mocker.call(
             mocker.ANY,
@@ -94,7 +98,8 @@ def test_send_event_with_unknown_trace_id(requests_mock):
     requests_mock.register_uri("POST", matcher, status_code=404)
 
     trace_id = "trace-id-abc123-1a2b3c"
-    assert not act_on_queue(
-        _make_event({"detail": {"status": "SUCCEEDED", "name": trace_id}}),
-        None,
-    )
+    with patch("event.handler.get_secret") as get_secret:
+        get_secret.return_value = "abc123"
+        assert not act_on_queue(
+            _make_event({"detail": {"status": "SUCCEEDED", "name": trace_id}}), None
+        )

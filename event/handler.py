@@ -1,9 +1,11 @@
 import json
 
 from okdata.aws.logging import log_add, logging_wrapper
+from okdata.aws.ssm import get_secret
 from okdata.aws.status import TraceStatus, TraceEventStatus
 from okdata.aws.status.sdk import Status
 from okdata.aws.status.wrapper import _status_from_lambda_context
+from okdata.sdk.config import Config
 
 finished_statuses = {
     "ABORTED": TraceEventStatus.FAILED,
@@ -47,7 +49,11 @@ def act_on_queue(event, context):
 
 
 def _set_finished_status(event, context, trace_id, event_status):
-    status = Status(_status_from_lambda_context(event, context))
+    sdk_config = Config()
+    sdk_config.config["client_secret"] = get_secret(
+        "/dataplatform/status-api/keycloak-client-secret"
+    )
+    status = Status(_status_from_lambda_context(event, context), sdk_config)
 
     trace_event_status = finished_statuses[event_status]
     log_add(trace_event_status=trace_event_status)
