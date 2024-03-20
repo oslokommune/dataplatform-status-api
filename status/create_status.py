@@ -23,7 +23,7 @@ resource_authorizer = ResourceAuthorizer()
 @xray_recorder.capture("create_status")
 def handler(event, context):
     db = StatusData()
-    status_item = simplejson.loads(event["body"])
+    status_item = simplejson.loads(event["body"], use_decimal=True)
     try:
         bearer_token = extract_bearer_token(event)
         dataset_id = extract_dataset_id(status_item)

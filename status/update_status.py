@@ -22,7 +22,7 @@ def handler(event, context):
     trace_id = params["trace_id"]
     log_add(trace_id=trace_id)
 
-    content = simplejson.loads(event["body"])
+    content = simplejson.loads(event["body"], use_decimal=True)
 
     db = StatusData()
     result = db.get_status(trace_id)
