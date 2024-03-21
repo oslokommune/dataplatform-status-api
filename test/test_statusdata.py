@@ -1,9 +1,12 @@
-import boto3
-import re
 import json
-import pytest
+import re
 from copy import deepcopy
-from moto import mock_dynamodb2
+from decimal import Decimal
+
+import boto3
+import pytest
+from moto import mock_aws
+
 from status.StatusData import StatusData
 
 event = {"pathParameters": {"trace_id": "uu-ii-dd"}, "body": json.dumps({})}
@@ -12,7 +15,7 @@ empty_context = {}
 
 @pytest.fixture()
 def dynamodb():
-    with mock_dynamodb2():
+    with mock_aws():
         yield boto3.resource("dynamodb", "eu-west-1")
 
 
@@ -59,6 +62,7 @@ status_body = {
     "trace_status": "OK",
     "trace_event_status": "STARTED",
     "errors": {"message": {"nb": "Problem", "en": "Problem"}},
+    "duration": Decimal("123.456"),
 }
 
 status_body_no_optional_data = {
