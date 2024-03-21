@@ -34,7 +34,6 @@ provider:
     RESOURCE_SERVER_CLIENT_ID: "okdata-resource-server"
     OKDATA_ENVIRONMENT: ${self:provider.stage}
     OKDATA_CLIENT_ID: status-api
-    OKDATA_CLIENT_SECRET: ${ssm:/dataplatform/status-api/keycloak-client-secret}
     SERVICE_NAME: ${self:service}
 
 plugins:
