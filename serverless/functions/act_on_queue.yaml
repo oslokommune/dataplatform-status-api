@@ -1,4 +1,7 @@
-handler: event.handler.act_on_queue
+image:
+  name: okdata-status-api
+  command:
+    - event.handler.act_on_queue
 timeout: 60
 events:
   - sns: arn:aws:sns:${self:provider.region}:${aws:accountId}:dataplatform_state_machine_event

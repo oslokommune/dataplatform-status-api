@@ -1,4 +1,7 @@
-handler: status.get_status_from_s3_path.handler
+image:
+  name: okdata-status-api
+  command:
+    - status.get_status_from_s3_path.handler
 events:
 - http:
     path: status-from-path/{s3_path}

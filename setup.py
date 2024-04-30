@@ -21,6 +21,10 @@ setup(
         "okdata-resource-auth",
         "okdata-sdk>=2.4,<4",
         "requests",
-        "simplejson",
+        # Require this version specifically to not clash with the version
+        # required by AWS' Python image for Lambda. ("awslambdaric 2.0.10
+        # requires simplejson==3.17.2, but you have simplejson [...] which is
+        # incompatible.")
+        "simplejson==3.17.2",
     ],
 )
