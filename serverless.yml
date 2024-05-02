@@ -4,7 +4,11 @@ service: status-api
 
 provider:
   name: aws
-  runtime: python3.11
+  ecr:
+    images:
+      okdata-status-api:
+        path: ./
+        platform: linux/amd64
   region: ${opt:region, 'eu-west-1'}
   endpointType: REGIONAL
   stage: ${opt:stage, 'dev'}
@@ -40,19 +44,12 @@ plugins:
   - serverless-better-credentials # must be first
   - serverless-plugin-git-variables
   - serverless-prune-plugin
-  - serverless-python-requirements
   - serverless-scriptable-plugin
 
 resources:
   Description: |
     ${self:service} ${git:branch}:${git:sha1}
     ${git:message}
-
-package:
-  patterns:
-    - '!**/*'
-    - event/*.py
-    - status/*.py
 
 functions:
   get_status: ${file(serverless/functions/get_status.yaml)}
@@ -62,9 +59,6 @@ functions:
   act_on_queue: ${file(serverless/functions/act_on_queue.yaml)}
 
 custom:
-  pythonRequirements:
-    dockerizePip: non-linux
-    usePoetry: false
   prune:
     automatic: true
     number: 3
