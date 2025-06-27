@@ -17,9 +17,9 @@ setup(
     install_requires=[
         "aws-xray-sdk",
         "boto3",
-        "okdata-aws>=4.1",
+        "okdata-aws>=5",
         "okdata-resource-auth",
-        "okdata-sdk>=2.4,<4",
+        "okdata-sdk>=3.3,<4",
         "requests",
         # Require this version specifically to not clash with the version
         # required by AWS' Python image for Lambda. ("awslambdaric 2.0.10
