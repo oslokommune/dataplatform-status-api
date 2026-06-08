@@ -17,7 +17,7 @@ setup(
     install_requires=[
         "aws-xray-sdk",
         "boto3",
-        "okdata-aws>=5",
+        "okdata-aws>=6",
         "okdata-resource-auth",
         "okdata-sdk>=3.3,<4",
         "requests",
